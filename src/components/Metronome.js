@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import WorkerBuilder from './WorkerBuilder'
 import MetronomeWorker from './MetronomeWorker'
+import { AudContext } from '../AudContext'
 
 export default function Metronome() {
-    // const [audioContext, setAudioContext] = useState(new AudioContext())
-    const [timerWorker, setTimerWorker] = useState(new WorkerBuilder(MetronomeWorker))
+    const {audioContext, setAudioContext} = useContext(AudContext)
+    
+    // const [timerWorker, setTimerWorker] = useState(new WorkerBuilder(MetronomeWorker))
     const [preset, setPreset] = useState(0)
     const [presetBar, setPresetBar] = useState(0)
     const [maxPresetBars, setMaxPresetBars] = useState(null)
@@ -20,8 +22,8 @@ export default function Metronome() {
     const [noteTime, setNoteTime] = useState()
     const [lastClick, setLastClick] = useState()
     const [secondToLastClick, setSecondToLastClick] = useState()
-    const [gainNode, setGainNode] = useState(null)
-    const [accentGainNode, setAccentGainNode] = useState(null)
+    // const [gainNode, setGainNode] = useState(null)
+    // const [accentGainNode, setAccentGainNode] = useState(null)
     const [buffers, setBuffers] = useState({})
     const [gainValues, setGainValues] = useState({
         sixtGain: 0,
@@ -39,9 +41,13 @@ export default function Metronome() {
         sixt: 'http://127.0.0.1:5501/sounds/tink.wav'
     })
 
-    const audioContextContainer = useRef(null)
-    const timerWorkerContainer = useRef(null)
-    const noteTimeContainer = useRef(null)
+    // const audioContext = useRef(null)
+    const [tick, setTick] = useState(null)
+    const timerWorker = useRef(null)
+    // const noteTime = useRef(null)
+    const gainNode = useRef(null)
+    const accentGainNode = useRef(null)
+    // const isMounted = useRef(null)
 
     // let buffers = {
     //     measBuffer: null,
@@ -100,27 +106,15 @@ export default function Metronome() {
             sixtSound: 'sounds/hihat.wav'
         },
     ]
-
-    useEffect(() => {
-        init()        
-    }, [])
-
-    useEffect(() => {
-        play()
-    }, [isPlaying])
-
-    useEffect(() => {
-        scheduler()
-    }, [noteTime])
-    
     const toggleProgramMode = () => {
         setProgramMode(oldPM => !oldPM)
+        console.log(programMode)
     }
 
     const loadSound = async (url) => {
         let response = await fetch(url)
         const arrayBuffer = await response.arrayBuffer()
-        const audioBuffer = await audioContextContainer.current.decodeAudioData(arrayBuffer)
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
         return audioBuffer
     }
     const setupSounds = async (urls) => {
@@ -134,7 +128,7 @@ export default function Metronome() {
         setBuffers(loadedBuffers)
     }    
     const playSound = (buffer, time) => {
-        const soundSource = audioContextContainer.current.createBufferSource()
+        const soundSource = audioContext.createBufferSource()
         soundSource.buffer = buffer
         soundSource.connect(gainNode)
         soundSource.start(time)
@@ -142,8 +136,10 @@ export default function Metronome() {
     }
     
     const playAccent = (buffer, time) => {
-        const accentSource = audioContextContainer.current.createBufferSource()
+        const accentSource = audioContext.createBufferSource()
         accentSource.buffer = buffer
+        console.log(accentSource)
+        console.log(gainNode)
         accentSource.connect(gainNode)
         accentSource.start(time)
         return accentSource
@@ -171,7 +167,7 @@ export default function Metronome() {
     }
 
     const stopProgram = () => {
-        timerWorker.postMessage("stop");
+        timerWorker.current.postMessage("stop");
         // isPlaying = !isPlaying
         setIsPlaying(oldIP => !oldIP)
         // document.getElementById('beat').innerText = 1
@@ -201,132 +197,155 @@ export default function Metronome() {
         return (gainValues.mastGain + 1) * value
     }
 
-    const nextNote = () => {
-        const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT tempo value to calculate beat length.
-                                                // secondsPerBeat converts tempo into seconds
-        setNoteTime(oldNT => oldNT += (1/12) * secondsPerBeat);    // beats subdivided into 12 parts to cover 16th, triplets, 8ths   
-                                                // define time at which next note should play
-        //noteTimeContainer.current += (1/12) * secondsPerBeat
-        setCurrentSubdivision(oldCS => oldCS++)
+    useEffect(() => {
+        const init = () => {
+            // audioContext = new AudioContext()
         
-        if (currentSubdivision >= beatsPerMeasure * 12 || currentSubdivision === 0) {
-            console.log('measure')
-            setCurrentSubdivision(0)
-            setBeat(0)                                    // reset at measure line for display
-            if (programMode) {
-                setPresetBar(oldPB => oldPB++)
-                if (presetBar === maxPresetBars && program[preset]) {    
+            setupSounds(soundUrls)      //setup default sounds
+    
+            timerWorker.current = new WorkerBuilder(MetronomeWorker)
+            timerWorker.current.onmessage = function(e) {
+            if (e.data === "tick") {
+                let count = 0
+                count++
+                setTick(count)
+                console.log("tick!");
+            }
+            else
+                console.log("message: " + e.data);
+        };
+        timerWorker.current.postMessage({"interval":lookahead});
+        }
+        init() 
+        console.log(audioContext)       
+    }, [])
+
+    useEffect(() => {
+        const play = () => {
+            setLastClick(null)
+            setBeat(1)
+            console.log(audioContext)
+            if (!unlocked) {
+              // play silent buffer to unlock the audio
+              let buffer = audioContext.createBuffer(1, 1, 22050);
+              let node = audioContext.createBufferSource();
+              node.buffer = buffer;
+              node.start(0);
+              setUnlocked(true);
+            }
+            console.log(isPlaying)
+            if (isPlaying) { 
+                if (programMode) {
                     nextLoop(program[preset])
                     setupSounds(soundUrls)
-                    setPresetBar(0)                       // reset presetBar for next loop
                     setPreset(oldPreset => oldPreset++)
                 }
-                if (presetBar === maxPresetBars && preset === program.length) {
-                    stopProgram()
-                    setPresetBar(0)                       // reset presetBar for next loop
-                    setPreset(0)
+                setCurrentSubdivision(0)
+                setNoteTime(audioContext.currentTime + .05)
+                // noteTime = audioContext.currentTime + .05
+                console.log(noteTime)
+                console.log(audioContext)
+                timerWorker.current.postMessage("start"); 
+            } else {
+                setPreset(0)
+                // document.getElementById('beat').innerText = 1
+                timerWorker.current.postMessage("stop");;
+            }
+        }
+        play()
+
+    }, [isPlaying])
+
+    useEffect(() => {
+        console.log(tick)
+        const scheduleNote = ( time ) => {
+            accentGainNode.current = audioContext.createGain()
+            accentGainNode.current.connect(audioContext.destination)
+            gainNode.current = audioContext.createGain()
+            gainNode.current.connect(audioContext.destination)          
+            
+            if (currentSubdivision % (beatsPerMeasure * 12) === 0) {
+                if (gainValues.measGain > 0) {
+                    playAccent(buffers.measBuffer, time)
+                    accentGainNode.current.gain.value = volume(gainValues.measGain)    
+                } 
+            }
+            if (currentSubdivision % 12 === 0) {
+                playSound(buffers.quarBuffer, time)
+                gainNode.current.gain.value = volume(gainValues.quarGain)
+            } 
+            else if (currentSubdivision % 6 === 0) {
+                playSound(buffers.eighBuffer, time)
+                gainNode.current.gain.value = volume(gainValues.eighGain)
+            }
+            else if (currentSubdivision % 4 === 0) {
+                playSound(buffers.tripBuffer, time)
+                gainNode.current.gain.value = volume(gainValues.tripGain)
+            }
+            else if (currentSubdivision % 3 === 0) {
+                playSound(buffers.sixtBuffer, time)
+                gainNode.current.gain.value = volume(gainValues.sixtGain)
+            } else {
+                gainNode.current.gain.value = 0                             // mute all other 12let notes
+            }
+                                                                    // use 8 for HNT and 2 for TS
+        }
+        const nextNote = () => {
+            const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT tempo value to calculate beat length.
+                                                    // secondsPerBeat converts tempo into seconds
+            setNoteTime(oldNT => oldNT += (1/12) * secondsPerBeat);    // beats subdivided into 12 parts to cover 16th, triplets, 8ths   
+                                                    // define time at which next note should play
+            // noteTime += (1/12) * secondsPerBeat
+            setCurrentSubdivision(oldCS => oldCS++)
+            
+            if (currentSubdivision >= beatsPerMeasure * 12 || currentSubdivision === 0) {
+                console.log('measure')
+                setCurrentSubdivision(0)
+                setBeat(0)                                    // reset at measure line for display
+                if (programMode) {
+                    setPresetBar(oldPB => oldPB++)
+                    if (presetBar === maxPresetBars && program[preset]) {    
+                        nextLoop(program[preset])
+                        setupSounds(soundUrls)
+                        setPresetBar(0)                       // reset presetBar for next loop
+                        setPreset(oldPreset => oldPreset++)
+                    }
+                    if (presetBar === maxPresetBars && preset === program.length) {
+                        stopProgram()
+                        setPresetBar(0)                       // reset presetBar for next loop
+                        setPreset(0)
+                    }
                 }
             }
+            if (currentSubdivision % 12 === 0) {
+                setBeat(oldBeat => oldBeat++)  
+            }                                        
+            // document.getElementById('beat').innerText = 'Beat ' + beat
+            // document.getElementById('preset-bars').innerText = maxPresetBars
+            // document.getElementById('preset-bar').innerText = 'Preset Bar ' + (presetBar + 1)
+            // document.getElementById('preset-number').innerText = 'Preset Number ' + (preset)
         }
-        if (currentSubdivision % 12 === 0) {
-            setBeat(oldBeat => oldBeat++)  
-        }                                        
-        // document.getElementById('beat').innerText = 'Beat ' + beat
-        // document.getElementById('preset-bars').innerText = maxPresetBars
-        // document.getElementById('preset-bar').innerText = 'Preset Bar ' + (presetBar + 1)
-        // document.getElementById('preset-number').innerText = 'Preset Number ' + (preset)
-    }
-
-    const scheduleNote = ( time ) => {
-        setAccentGainNode(audioContextContainer.current.createGain())
-        accentGainNode.connect(audioContextContainer.current.destination)
-        setGainNode(audioContextContainer.current.createGain())
-        gainNode.connect(audioContextContainer.current.destination)          
-        
-        if (currentSubdivision % (beatsPerMeasure * 12) === 0) {
-            if (gainValues.measGain > 0) {
-                playAccent(buffers.measBuffer, time)
-                accentGainNode.gain.value = volume(gainValues.measGain)    
-            } 
-        }
-        if (currentSubdivision % 12 === 0) {
-            playSound(buffers.quarBuffer, time)
-            gainNode.gain.value = volume(gainValues.quarGain)
-        } 
-        else if (currentSubdivision % 6 === 0) {
-            playSound(buffers.eighBuffer, time)
-            gainNode.gain.value = volume(gainValues.eighGain)
-        }
-        else if (currentSubdivision % 4 === 0) {
-            playSound(buffers.tripBuffer, time)
-            gainNode.gain.value = volume(gainValues.tripGain)
-        }
-        else if (currentSubdivision % 3 === 0) {
-            playSound(buffers.sixtBuffer, time)
-            gainNode.gain.value = volume(gainValues.sixtGain)
-        } else {
-            gainNode.gain.value = 0                             // mute all other 12let notes
-        }
-                                                                // use 8 for HNT and 2 for TS
-    }
-
-    const scheduler = () => {
-        console.log(noteTime)
-        if (noteTime < audioContextContainer.current.currentTime + scheduleAheadTime) {
-            scheduleNote(noteTime);
-            nextNote();
-        }
-    }
-
-    const play = () => {
-        setLastClick(null)
-        setBeat(1)
-        console.log(beat)
-        if (!unlocked) {
-          // play silent buffer to unlock the audio
-          let buffer = audioContextContainer.current.createBuffer(1, 1, 22050);
-          let node = audioContextContainer.current.createBufferSource();
-          node.buffer = buffer;
-          node.start(0);
-          setUnlocked(true);
-        }
-        console.log(isPlaying)
-        if (isPlaying) { 
-            if (programMode) {
-                nextLoop(program[preset])
-                setupSounds(soundUrls)
-                setPreset(oldPreset => oldPreset++)
+        const scheduler = () => {
+            console.log(audioContext)
+            console.log(noteTime) 
+            if (noteTime < audioContext.currentTime + scheduleAheadTime) {
+                scheduleNote(noteTime);
+                nextNote();
             }
-            setCurrentSubdivision(0)
-            setNoteTime(audioContextContainer.current.currentTime + .05)
-            // noteTimeContainer.current = audioContextContainer.current.currentTime + .05
-            console.log(noteTime)
-            console.log(audioContextContainer.current.currentTime)
-            timerWorkerContainer.current.postMessage("start");
-            return "Stop";
-        } else {
-            setPreset(0)
-            // document.getElementById('beat').innerText = 1
-            timerWorkerContainer.current.postMessage("stop");
-            return "Play";
         }
-    }
-    const init = () => {
-        audioContextContainer.current = new AudioContext()
-    
-        setupSounds(soundUrls)      //setup default sounds
+        scheduler()
+    }, [tick])
 
-        timerWorkerContainer.current = new WorkerBuilder(MetronomeWorker)
-        timerWorkerContainer.current.onmessage = function(e) {
-        if (e.data === "tick") {
-            console.log("tick!");
-            scheduler();
-        }
-        else
-            console.log("message: " + e.data);
-    };
-    timerWorkerContainer.current.postMessage({"interval":lookahead});
-    }
+    // useEffect(() => {
+    //     scheduler()
+    // }, [noteTime])
+    
+
+
+
+
+
+
 
     return (
     <div>
