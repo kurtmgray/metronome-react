@@ -92,6 +92,14 @@ Things to implement:
 		(SOLVED) beat display goes past the set beats per measure if changed at a particular time
             (SOLUTION) current subdivision was > than bpm * 12, so used >= at 233
         Measure volume not working, measure gain controlled by quarter gain
+
+		React
+		(IMPROVED)Errors on change volume, long time playing.
+			(SOLUTION) increase lookahead and delay start time, still not perfect when dragging slider
+
+		Time Signature not working.
+
+		Setting bpm per loop
     
     Down the road
         handle mixed meter

@@ -1,22 +1,14 @@
-import './App.css';
+import React from 'react';
 import Metronome from './components/Metronome';
-import React, { useState, useEffect, useMemo } from 'react';
-import { AudContext } from './AudContext'
+import { ToneContext } from './ToneContext'
 
 function App() {
-  const [audioContext, setAudioContext] = useState(new AudioContext())
-  
-  const value = useMemo(() => ({audioContext, setAudioContext}), [audioContext, setAudioContext])
-  
-  useEffect(() => {
-    setAudioContext(new AudioContext())
-  }, [])
 
   return (
     <div className="App">
-      <AudContext.Provider value={value}>  
-        <Metronome />
-      </AudContext.Provider>
+        <ToneContext>
+          <Metronome/>
+        </ToneContext>
     </div>
   );
 }
