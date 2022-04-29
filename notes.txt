@@ -97,11 +97,40 @@ Things to implement:
 		(IMPROVED)Errors on change volume, long time playing.
 			(SOLUTION) increase lookahead and delay start time, still not perfect when dragging slider
 
-		Time Signature not working.
+		Time Signature changes have no effect
 
-		Setting bpm per loop
+		(SOLVED)Call a function to stop Tone.Transport once the program is done playing.
+			(SOLUTION) used Tone.Transport.schedule() to schedule stop() and dispatch() using runningTotalMeasures
+
+		(SOLVED) Setting bpm per loop
+			(SOLUTION) used Tone.Transport.schedule() to schedule the changes at particular measures
     
     Down the road
         handle mixed meter
 
-*/
+TODO TODAY:
+	r̶e̶n̶d̶e̶r̶ P̶R̶O̶G̶R̶A̶M̶
+	r̶e̶n̶d̶e̶r̶ P̶R̶O̶G̶R̶A̶M̶ P̶R̶E̶S̶E̶T̶S̶
+	DND for programs AND presets
+		separate components for edit mode and display mode?
+	ADD PROGRAM functionality
+		p̶r̶o̶g̶r̶a̶m̶ c̶o̶m̶p̶o̶n̶e̶n̶t̶ r̶e̶n̶d̶e̶r̶s̶,̶ b̶u̶t̶ n̶o̶t̶ o̶t̶h̶e̶r̶s̶.̶
+	F̶i̶x̶ u̶s̶e̶E̶f̶f̶e̶c̶t̶ /̶ a̶c̶t̶i̶v̶e̶P̶r̶o̶g̶r̶a̶m̶ i̶s̶s̶u̶e̶s̶
+
+	Implement BrowserRouter? REST style routing?
+
+	EDIT program
+		basically just order of presets, using DND
+	EDIT preset
+		use tempPresetValues for selected preset?
+		use activePreset to store preset ID, filter through presets to update
+
+
+
+
+TODO TOMORROW:
+
+
+
+
+

@@ -1,5 +1,6 @@
 import React from 'react'
 import  { useStateContext } from '../ToneContext'
+import CreatePreset from './CreatePreset'
 
 export default function Metronome() {
     const [state, dispatch] = useStateContext()
@@ -7,32 +8,6 @@ export default function Metronome() {
     return (
     <div>
       <div id="controls">
-        <div>
-          {!state.isPlaying ? (
-            <button 
-              id="play" 
-              className="play" 
-              onClick={() => {dispatch({ type: 'play'})}}
-            >
-              Play
-            </button>
-          ) : (
-            <button 
-              id="play" 
-              className="play" 
-              onClick={() => {dispatch({ type: 'stop'})}}
-            >
-              Stop
-            </button>
-          )}
-          <button 
-              id="programMode" 
-              className="play" 
-              onClick={() => {dispatch({ type: 'programMode'})}}
-            >
-              Toggle Program Mode 
-            </button>
-        </div>
         <div id="tempoBox">Tempo: 
           <span id="showTempo">{state.tempo}</span>
           BPM 
@@ -44,7 +19,7 @@ export default function Metronome() {
             value={state.tempo} 
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'tempo', value: Number(e.target.value)})}
-          />
+            />
         </div>
         <div>Beats Per Measure
           <span id="showBPM">{state.beatsPerMeasure}</span>
@@ -56,7 +31,7 @@ export default function Metronome() {
             value={state.beatsPerMeasure} 
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'beatsPerMeasure', value: Number(e.target.value)})}
-          />
+            />
         </div>
         <div>16th Volume
           <span id="sixtVol">{state.sixtVol}</span>
@@ -68,19 +43,62 @@ export default function Metronome() {
             value={state.sixtVol} 
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'sixtVol', value: Number(e.target.value)})}
-          />
+            />
         </div>
+        <div>
+          <label htmlFor="sixtSelect">16th Note Sound:</label>
+          <select
+            name="sixtSelect"
+            id="sixtSelect"
+            value={state.sixtUrl}
+            onChange={e => dispatch({ type: 'sixtSound', value: e.target.value})}
+            disabled={state.isPlaying}
+            >
+            <option value=''>Choose a Sound</option>
+            <option value='http://127.0.0.1:5501/sounds/boom.wav'>Boom</option>
+            <option value='http://127.0.0.1:5501/sounds/clap.wav'>Clap</option>
+            <option value='http://127.0.0.1:5501/sounds/hihat.wav'>Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/kick.wav'>Kick</option>
+            <option value='http://127.0.0.1:5501/sounds/openhat.wav'>Open Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/ride.wav'>Ride Cymbal</option>
+            <option value='http://127.0.0.1:5501/sounds/snare.wav'>Snare</option>
+            <option value='http://127.0.0.1:5501/sounds/tink.wav'>Claves</option>
+            <option value='http://127.0.0.1:5501/sounds/tom.wav'>Tom</option>
+          </select>
+        </div>
+
         <div>8th Volume
           <span id="eighVol">{state.eighVol}</span>
           <input 
             id="bpm" 
             type="range" 
-              min={-50} 
-              max={0} 
+            min={-50} 
+            max={0} 
             value={state.eighVol} 
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'eighVol', value: Number(e.target.value)})}
-          />
+            />
+        </div>
+        <div>
+          <label htmlFor="eighSelect">8th Note Sound:</label>
+          <select
+            name="eighSelect"
+            id="eighSelect"
+            value={state.eighUrl}
+            onChange={e => dispatch({ type: 'eighSound', value: e.target.value})}
+            disabled={state.isPlaying}
+            >
+            <option value=''>Choose a Sound</option>
+            <option value='http://127.0.0.1:5501/sounds/boom.wav'>Boom</option>
+            <option value='http://127.0.0.1:5501/sounds/clap.wav'>Clap</option>
+            <option value='http://127.0.0.1:5501/sounds/hihat.wav'>Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/kick.wav'>Kick</option>
+            <option value='http://127.0.0.1:5501/sounds/openhat.wav'>Open Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/ride.wav'>Ride Cymbal</option>
+            <option value='http://127.0.0.1:5501/sounds/snare.wav'>Snare</option>
+            <option value='http://127.0.0.1:5501/sounds/tink.wav'>Claves</option>
+            <option value='http://127.0.0.1:5501/sounds/tom.wav'>Tom</option>
+          </select>
         </div>
         <div>Q Volume
           <span id="quarVol">{state.quarVol}</span>
@@ -92,7 +110,28 @@ export default function Metronome() {
             value={state.quarVol} 
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'quarVol', value: Number(e.target.value)})}
-          />
+            />
+        </div>
+        <div>
+          <label htmlFor="quarSelect">Quarter Note Sound:</label>
+          <select
+            name="quarSelect"
+            id="quarSelect"
+            value={state.quarUrl}
+            onChange={e => dispatch({ type: 'quarSound', value: e.target.value})}
+            disabled={state.isPlaying}
+            >
+            <option value=''>Choose a Sound</option>
+            <option value='http://127.0.0.1:5501/sounds/boom.wav'>Boom</option>
+            <option value='http://127.0.0.1:5501/sounds/clap.wav'>Clap</option>
+            <option value='http://127.0.0.1:5501/sounds/hihat.wav'>Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/kick.wav'>Kick</option>
+            <option value='http://127.0.0.1:5501/sounds/openhat.wav'>Open Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/ride.wav'>Ride Cymbal</option>
+            <option value='http://127.0.0.1:5501/sounds/snare.wav'>Snare</option>
+            <option value='http://127.0.0.1:5501/sounds/tink.wav'>Claves</option>
+            <option value='http://127.0.0.1:5501/sounds/tom.wav'>Tom</option>
+          </select>
         </div>
         <div>Triplet Volume
           <span id="tripVol">{state.tripVol}</span>
@@ -104,7 +143,28 @@ export default function Metronome() {
             value={state.tripVol}
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'tripVol', value: Number(e.target.value)})}
-          />
+            />
+        </div>
+        <div>
+          <label htmlFor="tripSelect">Triplet Note Sound:</label>
+          <select
+            name="tripSelect"
+            id="tripSelect"
+            value={state.tripUrl}
+            onChange={e => dispatch({ type: 'tripSound', value: e.target.value})}
+            disabled={state.isPlaying}
+            >
+            <option value=''>Choose a Sound</option>
+            <option value='http://127.0.0.1:5501/sounds/boom.wav'>Boom</option>
+            <option value='http://127.0.0.1:5501/sounds/clap.wav'>Clap</option>
+            <option value='http://127.0.0.1:5501/sounds/hihat.wav'>Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/kick.wav'>Kick</option>
+            <option value='http://127.0.0.1:5501/sounds/openhat.wav'>Open Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/ride.wav'>Ride Cymbal</option>
+            <option value='http://127.0.0.1:5501/sounds/snare.wav'>Snare</option>
+            <option value='http://127.0.0.1:5501/sounds/tink.wav'>Claves</option>
+            <option value='http://127.0.0.1:5501/sounds/tom.wav'>Tom</option>
+          </select>
         </div>
         <div>Measure Volume
           <span id="measVol">{state.measVol}</span>
@@ -116,7 +176,28 @@ export default function Metronome() {
             value={state.measVol}
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'measVol', value: Number(e.target.value)})}
-          />
+            />
+        </div>
+        <div>
+          <label htmlFor="measSelect">Measure Note Sound:</label>
+          <select
+            name="measSelect"
+            id="measSelect"
+            value={state.measUrl}
+            onChange={e => dispatch({ type: 'measSound', value: e.target.value})}
+            disabled={state.isPlaying}
+            >
+            <option value=''>Choose a Sound</option>
+            <option value='http://127.0.0.1:5501/sounds/boom.wav'>Boom</option>
+            <option value='http://127.0.0.1:5501/sounds/clap.wav'>Clap</option>
+            <option value='http://127.0.0.1:5501/sounds/hihat.wav'>Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/kick.wav'>Kick</option>
+            <option value='http://127.0.0.1:5501/sounds/openhat.wav'>Open Hi-Hat</option>
+            <option value='http://127.0.0.1:5501/sounds/ride.wav'>Ride Cymbal</option>
+            <option value='http://127.0.0.1:5501/sounds/snare.wav'>Snare</option>
+            <option value='http://127.0.0.1:5501/sounds/tink.wav'>Claves</option>
+            <option value='http://127.0.0.1:5501/sounds/tom.wav'>Tom</option>
+          </select>
         </div>
         <div>
           <span id="beat">Beat 1</span>
@@ -131,21 +212,66 @@ export default function Metronome() {
             value={state.mastVol}
             style={{height: '20px', width: '200px'}} 
             onChange={e => dispatch({ type: 'mastVol', value: Number(e.target.value)})}
-          />
+            />
         </div>
-        {/* <div>
+        <div>
           <button 
             className="tap" 
-            onClick={handleTap}>Tap to Set Tempo</button>
-        </div> */}
+            onClick={state.handleTap}>Tap to Set Tempo</button>
+          {!state.isPlaying  && !state.programMode ? (
+            <button 
+            id="play" 
+            className="play" 
+            onClick={() => {dispatch({ type: 'play'})}}
+            >
+              Play 
+            </button>
+          ) : (null)}
+          {state.isPlaying && !state.programMode ? (<button 
+              id="play" 
+              className="play" 
+              onClick={() => {dispatch({ type: 'stop'})}}
+              >
+              Stop
+            </button>
+          ) : (null)}
+          <div>
+            <button 
+                id="programMode" 
+                className="play" 
+                onClick={state.handleToggle}
+                >
+                View Programs 
+              </button>
+            {state.programMode && !state.activeProgram ? (
+              <button 
+              id="startProgram" 
+              className="start" 
+              onClick={state.startProgram}
+              disabled={state.program} 
+              >
+              Start Program 
+              </button>
+            ) : (null)}
+            {state.activeProgram && state.programMode ? (
+              <button 
+              id="stopProgram" 
+              className="stop"
+              onClick={state.stopProgram}
+              >
+              Stop Program 
+              </button>
+            ) : (null)}
+          </div>
+        </div>
         {/* <div>
           <label htmlFor="preset-bars">Number of Bars in Preset</label>
           <span id="preset-bars">{maxPresetBars}</span>
           <input 
-            name="preset-bars"
-            type="number"
-            onChange=
-              "maxPresetBars = event.target.value;
+          name="preset-bars"
+          type="number"
+          onChange=
+          "maxPresetBars = event.target.value;
               document.getElementById('preset-bars').innerText = maxPresetBars;
               console.log(maxPresetBars)"
           >
@@ -161,9 +287,9 @@ export default function Metronome() {
           <span id="preset-number">{preset}</span>
         </div>   */}
         <pre>
-        App State:
-        {JSON.stringify(state, null, "\t")}
-      </pre>
+          App State:
+          {JSON.stringify(state, null, "\t")}
+        </pre>
       </div>
     </div>
   )

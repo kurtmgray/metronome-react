@@ -98,7 +98,7 @@ const players = new Tone.Players({
     Tone.Transport.schedule(function (time) {
       console.log("ok?");
       Tone.Transport.bpm.value = e2.bpm;
-      Tone.Transport.timeSignature = e2.timeSignature;
+      Tone.Transport.timeSignature = 3;
     }, e2.start);
   });
   

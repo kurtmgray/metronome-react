@@ -1,5 +1,5 @@
 import React from 'react';
-import Metronome from './components/Metronome';
+import Main from './components/Main';
 import { ToneContext } from './ToneContext'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
         <ToneContext>
-          <Metronome/>
+          <Main/>
         </ToneContext>
     </div>
   );
