@@ -1,17 +1,27 @@
 import React from "react";
 import { useStateContext } from "../ToneContext";
-import CreatePreset from "./CreatePreset";
+import sounds from "../Sounds";
 
 export default function Metronome() {
   const [state, dispatch] = useStateContext();
 
   return (
     <div>
-      <div id="controls">
+      <div className="controls" id="controls">
+        <div className="mainDisplay">
+          <div className="tempoDisplay">
+            <h1>{state.tempo}</h1>
+          </div>
+          <div className="beatInfo">
+            <div className="beatsPerDisplay">
+              <h2>{state.beatsPerMeasure}</h2>
+            </div>
+            <div className="beatDisplay">
+              <h2>{state.currentBeat}</h2>
+            </div>
+          </div>
+        </div>
         <div id="tempoBox">
-          Tempo:
-          <span id="showTempo">{state.tempo}</span>
-          BPM
           <input
             id="tempo"
             type="range"
@@ -69,25 +79,16 @@ export default function Metronome() {
             disabled={state.isPlaying}
           >
             <option value="">Choose a Sound</option>
-            <option value="http://127.0.0.1:5501/sounds/boom.wav">Boom</option>
-            <option value="http://127.0.0.1:5501/sounds/clap.wav">Clap</option>
-            <option value="http://127.0.0.1:5501/sounds/hihat.wav">
-              Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/kick.wav">Kick</option>
-            <option value="http://127.0.0.1:5501/sounds/openhat.wav">
-              Open Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/ride.wav">
-              Ride Cymbal
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/snare.wav">
-              Snare
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tink.wav">
-              Claves
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tom.wav">Tom</option>
+            <option value="">Choose a Sound</option>
+            <option value={sounds.boom}>Boom</option>
+            <option value={sounds.clap}>Clap</option>
+            <option value={sounds.hihat}>Hi-Hat</option>
+            <option value={sounds.kick}>Kick</option>
+            <option value={sounds.openHihat}>Open Hi-Hat</option>
+            <option value={sounds.ride}>Ride Cymbal</option>
+            <option value={sounds.snare}>Snare</option>
+            <option value={sounds.claves}>Claves</option>
+            <option value={sounds.tom}>Tom</option>
           </select>
         </div>
 
@@ -118,25 +119,16 @@ export default function Metronome() {
             disabled={state.isPlaying}
           >
             <option value="">Choose a Sound</option>
-            <option value="http://127.0.0.1:5501/sounds/boom.wav">Boom</option>
-            <option value="http://127.0.0.1:5501/sounds/clap.wav">Clap</option>
-            <option value="http://127.0.0.1:5501/sounds/hihat.wav">
-              Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/kick.wav">Kick</option>
-            <option value="http://127.0.0.1:5501/sounds/openhat.wav">
-              Open Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/ride.wav">
-              Ride Cymbal
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/snare.wav">
-              Snare
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tink.wav">
-              Claves
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tom.wav">Tom</option>
+            <option value="">Choose a Sound</option>
+            <option value={sounds.boom}>Boom</option>
+            <option value={sounds.clap}>Clap</option>
+            <option value={sounds.hihat}>Hi-Hat</option>
+            <option value={sounds.kick}>Kick</option>
+            <option value={sounds.openHihat}>Open Hi-Hat</option>
+            <option value={sounds.ride}>Ride Cymbal</option>
+            <option value={sounds.snare}>Snare</option>
+            <option value={sounds.claves}>Claves</option>
+            <option value={sounds.tom}>Tom</option>
           </select>
         </div>
         <div>
@@ -166,25 +158,16 @@ export default function Metronome() {
             disabled={state.isPlaying}
           >
             <option value="">Choose a Sound</option>
-            <option value="http://127.0.0.1:5501/sounds/boom.wav">Boom</option>
-            <option value="http://127.0.0.1:5501/sounds/clap.wav">Clap</option>
-            <option value="http://127.0.0.1:5501/sounds/hihat.wav">
-              Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/kick.wav">Kick</option>
-            <option value="http://127.0.0.1:5501/sounds/openhat.wav">
-              Open Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/ride.wav">
-              Ride Cymbal
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/snare.wav">
-              Snare
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tink.wav">
-              Claves
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tom.wav">Tom</option>
+            <option value="">Choose a Sound</option>
+            <option value={sounds.boom}>Boom</option>
+            <option value={sounds.clap}>Clap</option>
+            <option value={sounds.hihat}>Hi-Hat</option>
+            <option value={sounds.kick}>Kick</option>
+            <option value={sounds.openHihat}>Open Hi-Hat</option>
+            <option value={sounds.ride}>Ride Cymbal</option>
+            <option value={sounds.snare}>Snare</option>
+            <option value={sounds.claves}>Claves</option>
+            <option value={sounds.tom}>Tom</option>
           </select>
         </div>
         <div>
@@ -214,25 +197,16 @@ export default function Metronome() {
             disabled={state.isPlaying}
           >
             <option value="">Choose a Sound</option>
-            <option value="http://127.0.0.1:5501/sounds/boom.wav">Boom</option>
-            <option value="http://127.0.0.1:5501/sounds/clap.wav">Clap</option>
-            <option value="http://127.0.0.1:5501/sounds/hihat.wav">
-              Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/kick.wav">Kick</option>
-            <option value="http://127.0.0.1:5501/sounds/openhat.wav">
-              Open Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/ride.wav">
-              Ride Cymbal
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/snare.wav">
-              Snare
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tink.wav">
-              Claves
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tom.wav">Tom</option>
+            <option value="">Choose a Sound</option>
+            <option value={sounds.boom}>Boom</option>
+            <option value={sounds.clap}>Clap</option>
+            <option value={sounds.hihat}>Hi-Hat</option>
+            <option value={sounds.kick}>Kick</option>
+            <option value={sounds.openHihat}>Open Hi-Hat</option>
+            <option value={sounds.ride}>Ride Cymbal</option>
+            <option value={sounds.snare}>Snare</option>
+            <option value={sounds.claves}>Claves</option>
+            <option value={sounds.tom}>Tom</option>
           </select>
         </div>
         <div>
@@ -262,25 +236,16 @@ export default function Metronome() {
             disabled={state.isPlaying}
           >
             <option value="">Choose a Sound</option>
-            <option value="http://127.0.0.1:5501/sounds/boom.wav">Boom</option>
-            <option value="http://127.0.0.1:5501/sounds/clap.wav">Clap</option>
-            <option value="http://127.0.0.1:5501/sounds/hihat.wav">
-              Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/kick.wav">Kick</option>
-            <option value="http://127.0.0.1:5501/sounds/openhat.wav">
-              Open Hi-Hat
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/ride.wav">
-              Ride Cymbal
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/snare.wav">
-              Snare
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tink.wav">
-              Claves
-            </option>
-            <option value="http://127.0.0.1:5501/sounds/tom.wav">Tom</option>
+            <option value="">Choose a Sound</option>
+            <option value={sounds.boom}>Boom</option>
+            <option value={sounds.clap}>Clap</option>
+            <option value={sounds.hihat}>Hi-Hat</option>
+            <option value={sounds.kick}>Kick</option>
+            <option value={sounds.openHihat}>Open Hi-Hat</option>
+            <option value={sounds.ride}>Ride Cymbal</option>
+            <option value={sounds.snare}>Snare</option>
+            <option value={sounds.claves}>Claves</option>
+            <option value={sounds.tom}>Tom</option>
           </select>
         </div>
         <div>
@@ -301,88 +266,38 @@ export default function Metronome() {
             }
           />
         </div>
-        <div>
-          <button className="tap" onClick={() => dispatch({ type: "bpmTap" })}>
-            Tap to Set Tempo
-          </button>
-          {!state.isPlaying && !state.programMode ? (
-            <button
-              id="play"
-              className="play"
-              onClick={() => {
-                dispatch({ type: "play" });
-              }}
-            >
-              Play
-            </button>
-          ) : null}
-          {state.isPlaying && !state.programMode ? (
-            <button
-              id="play"
-              className="play"
-              onClick={() => {
-                dispatch({ type: "stop" });
-              }}
-            >
-              Stop
-            </button>
-          ) : null}
-          <div>
-            <button
-              id="programMode"
-              className="play"
-              onClick={state.handleToggle}
-            >
-              View Programs
-            </button>
-            {state.programMode && !state.activeProgram ? (
-              <button
-                id="startProgram"
-                className="start"
-                onClick={state.startProgram}
-                disabled={state.program}
-              >
-                Start Program
-              </button>
-            ) : null}
-            {state.activeProgram && state.programMode ? (
-              <button
-                id="stopProgram"
-                className="stop"
-                onClick={state.stopProgram}
-              >
-                Stop Program
-              </button>
-            ) : null}
-          </div>
-        </div>
-        {/* <div>
-          <label htmlFor="preset-bars">Number of Bars in Preset</label>
-          <span id="preset-bars">{maxPresetBars}</span>
-          <input 
-          name="preset-bars"
-          type="number"
-          onChange=
-          "maxPresetBars = event.target.value;
-              document.getElementById('preset-bars').innerText = maxPresetBars;
-              console.log(maxPresetBars)"
-          >
-
-        </div>
-        <div>
-          {/* <!-- <button onClick="savePresets()">Save Preset to Program</button> --> */}
-        {/* <button onClick={toggleProgramMode}>Toggle Program Mode</button>
-          <span id="program-toggle"></span>
-        </div>
-          <div className='preset-info'>
-          <span id="preset-bar">{presetBar}</span>
-          <span id="preset-number">{preset}</span>
-        </div>   */}
-        <pre>
-          App State:
-          {JSON.stringify(state, null, "\t")}
-        </pre>
       </div>
+      <div className="metButtons">
+        <button className="tap" onClick={() => dispatch({ type: "bpmTap" })}>
+          Tap to Set Tempo
+        </button>
+        {!state.isPlaying && !state.programMode ? (
+          <button
+            id="play"
+            className="play"
+            onClick={() => {
+              dispatch({ type: "play" });
+            }}
+          >
+            Play
+          </button>
+        ) : null}
+        {state.isPlaying && !state.programMode ? (
+          <button
+            id="play"
+            className="play"
+            onClick={() => {
+              dispatch({ type: "stop" });
+            }}
+          >
+            Stop
+          </button>
+        ) : null}
+      </div>
+      <pre>
+        App State:
+        {JSON.stringify(state, null, "\t")}
+      </pre>
     </div>
   );
 }

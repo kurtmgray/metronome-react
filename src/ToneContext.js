@@ -6,28 +6,29 @@ import React, {
   useRef,
 } from "react";
 import * as Tone from "tone";
+import sounds from "./Sounds";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   isPlaying: false,
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
-  sixtVol: -50,
-  eighVol: -50,
-  quarVol: -50,
-  tripVol: -50,
-  measVol: -50,
-  mastVol: -50,
-  measUrl: "http://127.0.0.1:5501/sounds/boom.wav",
-  quarUrl: "http://127.0.0.1:5501/sounds/hihat.wav",
-  eighUrl: "http://127.0.0.1:5501/sounds/ride.wav",
-  tripUrl: "http://127.0.0.1:5501/sounds/snare.wav",
-  sixtUrl: "http://127.0.0.1:5501/sounds/tink.wav",
+  currentBeat: 1,
+  mastVol: -15,
+  measVol: -15,
+  quarVol: -15,
+  eighVol: -15,
+  tripVol: -15,
+  sixtVol: -15,
+  measUrl: sounds.boom,
+  quarUrl: sounds.kick,
+  eighUrl: sounds.ride,
+  tripUrl: sounds.hihat,
+  sixtUrl: sounds.claves,
   lastClick: null,
   secondToLastClick: null,
-  activePreset: undefined, // id of the preset being edited....  better to use ID or index for these? examine how IDs are being used
-  activeProgram: undefined, // the index of the program in programs being edited, displayed, or added to
-  // set when selecting a program to edit (programs[i] OR adding one (programs.length)
+  activePresetId: undefined,
+  activeProgramId: undefined,
   programMode: false,
   createPresetMode: false,
   tempPresetValues: {
@@ -71,9 +72,9 @@ const initialState = {
           },
           volume: {
             meas: -15,
-            quar: -15,
+            quar: -20,
             eigh: -15,
-            trip: -15,
+            trip: -11,
             sixt: -15,
           },
         },
@@ -136,6 +137,23 @@ const StateContext = createContext([
 export const useStateContext = () => useContext(StateContext);
 
 const reducer = (state, action) => {
+  // const setPresetValue = (property, value) => {
+  //   if (property === '')
+
+  //   return {
+  //     ...state,
+  //     programs: [
+  //       state.programs.map(program =>
+  //         program.id === state.activeProgramId
+  //           ? program.presets.map(preset =>
+  //             preset.id === state.activePresetId
+  //               ? {...preset, [property]: value}
+  //               : preset)
+  //           : program
+  //       )
+  //     ]
+  //   }
+  // }
   switch (action.type) {
     case "play":
       return { ...state, isPlaying: true };
@@ -157,12 +175,8 @@ const reducer = (state, action) => {
       return { ...state, tripVol: action.value };
     case "sixtVol":
       return { ...state, sixtVol: action.value };
-    // case "startProgram":
-    //     return {...state, activeProgram: true}
-    // case "stopProgram":
-    //     return {...state, activeProgram: false}
     case "programMode":
-      return { ...state, programMode: !state.programMode };
+      return { ...state, programMode: action.value };
     case "measSound":
       return { ...state, measUrl: action.value };
     case "quarSound":
@@ -173,148 +187,486 @@ const reducer = (state, action) => {
       return { ...state, tripUrl: action.value };
     case "sixtSound":
       return { ...state, sixtUrl: action.value };
-    case "sixtPresetSound":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          sounds: {
-            ...state.tempPresetValues.sounds,
-            sixt: action.value,
+    case "sixtPresetSound": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          sounds: {
+                            ...preset.volume,
+                            sixt: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            sounds: {
+              ...state.tempPresetValues.sounds,
+              sixt: action.value,
+            },
           },
-        },
-      };
-    case "tripPresetSound":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          sounds: {
-            ...state.tempPresetValues.sounds,
-            trip: action.value,
+        };
+      }
+    }
+    case "tripPresetSound": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          sounds: {
+                            ...preset.volume,
+                            trip: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            sounds: {
+              ...state.tempPresetValues.sounds,
+              trip: action.value,
+            },
           },
-        },
-      };
-    case "eighPresetSound":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          sounds: {
-            ...state.tempPresetValues.sounds,
-            eigh: action.value,
+        };
+      }
+    }
+    case "eighPresetSound": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          sounds: {
+                            ...preset.volume,
+                            eigh: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            sounds: {
+              ...state.tempPresetValues.sounds,
+              eigh: action.value,
+            },
           },
-        },
-      };
-    case "quarPresetSound":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          sounds: {
-            ...state.tempPresetValues.sounds,
-            quar: action.value,
+        };
+      }
+    }
+    case "quarPresetSound": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          sounds: {
+                            ...preset.volume,
+                            quar: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            sounds: {
+              ...state.tempPresetValues.sounds,
+              quar: action.value,
+            },
           },
-        },
-      };
-    case "measPresetSound":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          sounds: {
-            ...state.tempPresetValues.sounds,
-            meas: action.value,
+        };
+      }
+    }
+    case "measPresetSound": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          sounds: {
+                            ...preset.volume,
+                            meas: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            sounds: {
+              ...state.tempPresetValues.sounds,
+              meas: action.value,
+            },
           },
-        },
-      };
-    case "sixtPresetVol":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          volume: {
-            ...state.tempPresetValues.volume,
-            sixt: action.value,
+        };
+      }
+    }
+    case "sixtPresetVol": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          volume: {
+                            ...preset.volume,
+                            sixt: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            volume: {
+              ...state.tempPresetValues.volume,
+              sixt: action.value,
+            },
           },
-        },
-      };
-    case "tripPresetVol":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          volume: {
-            ...state.tempPresetValues.volume,
-            trip: action.value,
+        };
+      }
+    }
+    case "tripPresetVol": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          volume: {
+                            ...preset.volume,
+                            trip: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            volume: {
+              ...state.tempPresetValues.volume,
+              trip: action.value,
+            },
           },
-        },
-      };
-    case "eighPresetVol":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          volume: {
-            ...state.tempPresetValues.volume,
-            eigh: action.value,
+        };
+      }
+    }
+    case "eighPresetVol": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          volume: {
+                            ...preset.volume,
+                            eigh: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            volume: {
+              ...state.tempPresetValues.volume,
+              eigh: action.value,
+            },
           },
-        },
-      };
-    case "quarPresetVol":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          volume: {
-            ...state.tempPresetValues.volume,
-            quar: action.value,
+        };
+      }
+    }
+    case "quarPresetVol": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          volume: {
+                            ...preset.volume,
+                            quar: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            volume: {
+              ...state.tempPresetValues.volume,
+              quar: action.value,
+            },
           },
-        },
-      };
-    case "measPresetVol":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          volume: {
-            ...state.tempPresetValues.volume,
-            meas: action.value,
+        };
+      }
+    }
+    case "measPresetVol": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          volume: {
+                            ...preset.volume,
+                            meas: action.value,
+                          },
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            volume: {
+              ...state.tempPresetValues.volume,
+              meas: action.value,
+            },
           },
-        },
-      };
-    case "presetTitle":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          title: action.value,
-        },
-      };
-    case "presetTempo":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          tempo: action.value,
-        },
-      };
-    case "presetIterations":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          iterations: action.value,
-        },
-      };
-    case "presetBeatsPerMeasure":
-      return {
-        ...state,
-        tempPresetValues: {
-          ...state.tempPresetValues,
-          timeSignature: action.value,
-        },
-      };
+        };
+      }
+    }
+    case "presetTitle": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          title: action.value,
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            title: action.value,
+          },
+        };
+      }
+    }
+    case "presetTempo": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          tempo: action.value,
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            tempo: action.value,
+          },
+        };
+      }
+    }
+    case "presetIterations": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          iterations: action.value,
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            iterations: action.value,
+          },
+        };
+      }
+    }
+    case "presetBeatsPerMeasure": {
+      if (state.activePresetId) {
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? {
+                  ...program,
+                  presets: program.presets.map((preset) =>
+                    preset.id === state.activePresetId
+                      ? {
+                          ...preset,
+                          timeSignature: action.value,
+                        }
+                      : preset
+                  ),
+                }
+              : program
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          tempPresetValues: {
+            ...state.tempPresetValues,
+            timeSignature: action.value,
+          },
+        };
+      }
+    }
     case "resetTempPresetValues":
       return {
         ...state,
@@ -344,15 +696,27 @@ const reducer = (state, action) => {
       return { ...state, createPresetMode: !state.createPresetMode };
     case "addProgram":
       return { ...state, programs: [action.value, ...state.programs] };
-    case "selectProgram":
-      return !state.activeProgram
-        ? { ...state, activeProgram: action.value }
-        : { ...state, activeProgram: undefined };
+    case "selectPreset": {
+      if (state.activePresetId === action.value) {
+        return { ...state };
+      } else
+        return !state.activePresetId
+          ? { ...state, activePresetId: action.value }
+          : { ...state, activePresetId: undefined };
+    }
+    case "selectProgram": {
+      if (state.activeProgramId === action.value) {
+        return { ...state };
+      } else
+        return !state.activeProgramId
+          ? { ...state, activeProgramId: action.value }
+          : { ...state, activeProgramId: undefined };
+    }
     case "programTitle":
       return {
         ...state,
         programs: state.programs.map((program) =>
-          program.id === state.activeProgram.id
+          program.id === state.activeProgramId
             ? {
                 ...program,
                 title: action.value,
@@ -360,40 +724,84 @@ const reducer = (state, action) => {
             : program
         ),
       };
-    case "addPreset":
-      return {
-        ...state,
-        programs: state.programs.map((program) =>
-          program.id === action.id
-            ? { ...program, presets: action.value }
-            : program
-        ),
-      };
-    case "syncActiveProgramPresets":
-      console.log(action.value);
-      return {
-        ...state,
-        activePreset: action.value,
-      };
-    case "syncActiveProgramTitle":
-      console.log(
-        state.programs.find((program) => program.id === action.value)
+    case "addPreset": {
+      let programCopy = state.programs.find(
+        (program) => program.id === state.activeProgramId
       );
-      return {
-        ...state,
-        activeProgram: state.programs.find(
-          (program) => program.id === action.value
-        ),
+      const preset = {
+        id: uuidv4(), // uuid
+        title: state.tempPresetValues.title,
+        tempo: state.tempPresetValues.tempo,
+        iterations: state.tempPresetValues.iterations,
+        timeSignature: state.tempPresetValues.timeSignature,
+        sounds: {
+          meas: state.tempPresetValues.sounds.meas,
+          quar: state.tempPresetValues.sounds.quar,
+          eigh: state.tempPresetValues.sounds.eigh,
+          trip: state.tempPresetValues.sounds.trip,
+          sixt: state.tempPresetValues.sounds.sixt,
+        },
+        volume: {
+          meas: state.tempPresetValues.volume.meas,
+          quar: state.tempPresetValues.volume.quar,
+          eigh: state.tempPresetValues.volume.eigh,
+          trip: state.tempPresetValues.volume.trip,
+          sixt: state.tempPresetValues.volume.sixt,
+        },
       };
+      const emptySound = Object.values(preset.sounds).includes("");
+      if (emptySound) {
+        alert("Empty value in sounds object.");
+        return { ...state };
+      } else {
+        const presets = [...programCopy.presets, preset];
+        return {
+          ...state,
+          programs: state.programs.map((program) =>
+            program.id === state.activeProgramId
+              ? { ...program, presets: presets }
+              : program
+          ),
+          tempPresetValues: {
+            title: "Preset title...",
+            id: uuidv4(),
+            tempo: 120,
+            iterations: 1,
+            timeSignature: 4,
+            sounds: {
+              meas: "",
+              quar: "",
+              eigh: "",
+              trip: "",
+              sixt: "",
+            },
+            volume: {
+              meas: -15,
+              quar: -15,
+              eigh: -15,
+              trip: -15,
+              sixt: -15,
+            },
+          },
+          createPresetMode: false,
+        };
+      }
+    }
     case "bpmTap": {
       const timeNow = new Date().getTime();
       let tempo;
+      let timeoutId;
       if (state.secondToLastClick) {
         const difference = (timeNow - state.secondToLastClick) / 2;
         tempo = Math.floor(60000 / difference);
       }
       if (tempo > 250) tempo = 250;
       if (tempo < 30) tempo = 30;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        console.log("fired");
+        return { ...state, lastClick: null, secondToLastClick: null };
+      }, 5000);
       return {
         ...state,
         secondToLastClick: state.lastClick,
@@ -401,7 +809,6 @@ const reducer = (state, action) => {
         tempo: tempo ? tempo : state.tempo,
       };
     }
-
     default:
       return state;
   }
@@ -550,24 +957,24 @@ export const ToneContext = ({ children }) => {
   };
 
   useEffect(() => {
-    if (state.activeProgram && state.programMode && state.isPlaying) {
-      // const activeProgram = state.programs.find(program => program.id === state.activeProgram.id)
+    if (state.activeProgramId && state.programMode && state.isPlaying) {
       Tone.start();
-      let runningTotalIterations = 0;
-      const startMeasures = state.activeProgram.presets.map(
-        ({ iterations }, i) => {
-          let result = runningTotalIterations;
-          runningTotalIterations += iterations;
-          return i === 0 ? 0 + 0.05 : result;
-        }
+      const activeProgram = state.programs.find(
+        (program) => program.id === state.activeProgramId
       );
+      let runningTotalIterations = 0;
+      const startMeasures = activeProgram.presets.map(({ iterations }, i) => {
+        let result = runningTotalIterations;
+        runningTotalIterations += iterations;
+        return i === 0 ? 0 + 0.05 : result;
+      });
 
       Tone.Transport.schedule((time) => {
         Tone.Transport.stop();
         dispatch({ type: "stop" });
       }, runningTotalIterations + "m");
 
-      state.activeProgram.presets.map((preset, i) => {
+      activeProgram.presets.map((preset, i) => {
         Tone.Transport.schedule((time) => {
           Tone.Transport.bpm.value = preset.tempo;
           Tone.Transport.timeSignature = preset.timeSignature;
@@ -599,69 +1006,30 @@ export const ToneContext = ({ children }) => {
       });
       Tone.Transport.lookahead = 100;
       Tone.Transport.start();
-    } else if (!state.activeProgram && state.programMode) {
+    } else if (!state.activeProgramId && state.programMode) {
       Tone.Transport.cancel();
       Tone.Transport.stop();
     }
-  }, [state.isPlaying, state.activeProgram, state.programs, state.programMode]);
+  }, [
+    state.isPlaying,
+    state.activeProgramId,
+    state.programs,
+    state.programMode,
+  ]);
 
   const methods = {
-    startProgram: () => {
-      dispatch({ type: "startProgram" });
-    },
-    stopProgram: () => {
-      dispatch({ type: "stopProgram" });
-    },
     handleToggle: () => {
       Tone.Transport.cancel(0);
-      dispatch({ type: "programMode" });
-    },
-    handleSavePreset: (e) => {
-      let programCopy = state.programs.find(
-        (program) => program.id === e.target.id
-      );
-      const preset = {
-        id: uuidv4(), // uuid
-        title: state.tempPresetValues.title,
-        tempo: state.tempPresetValues.tempo,
-        iterations: state.tempPresetValues.iterations,
-        timeSignature: state.tempPresetValues.timeSignature,
-        sounds: {
-          meas: state.tempPresetValues.sounds.meas,
-          quar: state.tempPresetValues.sounds.quar,
-          eigh: state.tempPresetValues.sounds.eigh,
-          trip: state.tempPresetValues.sounds.trip,
-          sixt: state.tempPresetValues.sounds.sixt,
-        },
-        volume: {
-          meas: state.tempPresetValues.volume.meas,
-          quar: state.tempPresetValues.volume.quar,
-          eigh: state.tempPresetValues.volume.eigh,
-          trip: state.tempPresetValues.volume.trip,
-          sixt: state.tempPresetValues.volume.sixt,
-        },
-      };
-      const emptySound = Object.values(preset.sounds).includes("");
-      if (!emptySound) {
-        programCopy.presets = [...programCopy.presets, preset];
-        // working well, but not sure if kosher
-        dispatch({
-          type: "addPreset",
-          id: programCopy.id,
-          value: programCopy.presets,
-        });
-        dispatch({ type: "syncActiveProgramPresets", value: programCopy });
-        dispatch({ type: "resetTempPresetValues" });
-        // also save programs array to local storage
-      } else {
-        alert("Empty value in sounds object.");
-      }
     },
     handleSelectProgram: (e) => {
-      const activeProgram = state.programs.find(
-        (program) => program.id === e.target.id
-      );
-      dispatch({ type: "selectProgram", value: activeProgram });
+      if (state.activeProgramId) {
+        console.log("already have an id");
+      } else {
+        const activeProgram = state.programs.find(
+          (program) => program.id === e.target.id
+        );
+        dispatch({ type: "selectProgram", value: activeProgram.id });
+      }
     },
     handleCreateProgram: () => {
       const program = {
@@ -675,6 +1043,24 @@ export const ToneContext = ({ children }) => {
     handleCancelNewPreset: () => {
       dispatch({ type: "createPreset" });
       dispatch({ type: "resetTempPresetValues" });
+    },
+    getPresetValue: (property) => {
+      const progIdx = state.programs.findIndex(
+        (program) => program.id === state.activeProgramId
+      );
+      const presIdx = state.programs[progIdx].presets.findIndex(
+        (preset) => preset.id === state.activePresetId
+      );
+      return state.programs[progIdx].presets[presIdx][property];
+    },
+    getNestedPresetValue: (parent, child) => {
+      const progIdx = state.programs.findIndex(
+        (program) => program.id === state.activeProgramId
+      );
+      const presIdx = state.programs[progIdx].presets.findIndex(
+        (preset) => preset.id === state.activePresetId
+      );
+      return state.programs[progIdx].presets[presIdx][parent][child];
     },
   };
 

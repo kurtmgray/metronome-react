@@ -8,7 +8,9 @@ export default function EditProgram() {
     <div>
       <input
         type="text"
-        value={state.activeProgram.title}
+        value={state.programs.map((program) =>
+          program.id === state.activeProgramId ? program.title : null
+        )}
         onChange={(e) => {
           dispatch({ type: "programTitle", value: e.target.value });
         }}

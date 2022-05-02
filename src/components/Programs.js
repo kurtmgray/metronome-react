@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useStateContext } from "../ToneContext";
 
 export default function Program() {
@@ -11,9 +12,11 @@ export default function Program() {
       {state.programs.length ? (
         state.programs.map((program) => (
           <div id={program.id} key={program.id}>
-            <p id={program.id} onClick={(e) => state.handleSelectProgram(e)}>
-              {program.title}
-            </p>
+            <Link to="/program">
+              <p id={program.id} onClick={(e) => state.handleSelectProgram(e)}>
+                {program.title}
+              </p>
+            </Link>
           </div>
         ))
       ) : (
@@ -25,9 +28,6 @@ export default function Program() {
         onClick={state.handleCreateProgram}
       >
         Add a Program
-      </button>
-      <button onClick={() => dispatch({ type: "programMode" })}>
-        Return to Metronome
       </button>
       <pre>
         App State:

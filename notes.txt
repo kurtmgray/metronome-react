@@ -118,6 +118,7 @@ TODO TODAY:
 	F̶i̶x̶ u̶s̶e̶E̶f̶f̶e̶c̶t̶ /̶ a̶c̶t̶i̶v̶e̶P̶r̶o̶g̶r̶a̶m̶ i̶s̶s̶u̶e̶s̶
 
 	Implement BrowserRouter? REST style routing?
+	MUST DO ROUTING
 
 	EDIT program
 		basically just order of presets, using DND
@@ -125,6 +126,10 @@ TODO TODAY:
 		use tempPresetValues for selected preset?
 		use activePreset to store preset ID, filter through presets to update
 
+	CONFIG FILE for all of the sound URLs
+		sounds.boom
+		sounds.tink 
+		etc
 
 
 
