@@ -9,8 +9,10 @@ export default function Preset({ preset }) {
       className="presetBox"
       name={preset.id}
       id={preset.id}
+      style={{
+        backgroundColor: preset.id === state.activePresetId ? "orange" : null,
+      }}
       onClick={() => {
-        console.log(preset);
         dispatch({ type: "selectPreset", value: preset.id });
       }}
     >

@@ -29,6 +29,7 @@ const initialState = {
   secondToLastClick: null,
   activePresetId: undefined,
   activeProgramId: undefined,
+  changesMade: false,
   programMode: false,
   createPresetMode: false,
   tempPresetValues: {
@@ -200,7 +201,7 @@ const reducer = (state, action) => {
                       ? {
                           ...preset,
                           sounds: {
-                            ...preset.volume,
+                            ...preset.sounds,
                             sixt: action.value,
                           },
                         }
@@ -209,6 +210,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -236,7 +238,7 @@ const reducer = (state, action) => {
                       ? {
                           ...preset,
                           sounds: {
-                            ...preset.volume,
+                            ...preset.sounds,
                             trip: action.value,
                           },
                         }
@@ -245,6 +247,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -272,7 +275,7 @@ const reducer = (state, action) => {
                       ? {
                           ...preset,
                           sounds: {
-                            ...preset.volume,
+                            ...preset.sounds,
                             eigh: action.value,
                           },
                         }
@@ -281,6 +284,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -308,7 +312,7 @@ const reducer = (state, action) => {
                       ? {
                           ...preset,
                           sounds: {
-                            ...preset.volume,
+                            ...preset.sounds,
                             quar: action.value,
                           },
                         }
@@ -317,6 +321,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -344,7 +349,7 @@ const reducer = (state, action) => {
                       ? {
                           ...preset,
                           sounds: {
-                            ...preset.volume,
+                            ...preset.sounds,
                             meas: action.value,
                           },
                         }
@@ -353,6 +358,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -389,6 +395,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -425,6 +432,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -461,6 +469,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -497,6 +506,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -533,6 +543,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -566,6 +577,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -596,6 +608,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -626,6 +639,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -656,6 +670,7 @@ const reducer = (state, action) => {
                 }
               : program
           ),
+          changesMade: true,
         };
       } else {
         return {
@@ -696,14 +711,86 @@ const reducer = (state, action) => {
       return { ...state, createPresetMode: !state.createPresetMode };
     case "addProgram":
       return { ...state, programs: [action.value, ...state.programs] };
+    case "revertPresetChanges": {
+      return {
+        ...state,
+        programs: state.programs.map((program) =>
+          program.id === state.activeProgramId
+            ? {
+                ...program,
+                presets: program.presets.map((preset) =>
+                  preset.id === state.activePresetId
+                    ? { ...state.tempPresetValues }
+                    : preset
+                ),
+              }
+            : program
+        ),
+        changesMade: false,
+        // tempPresetValues: {
+        //   title: "Preset title...",
+        //   id: uuidv4(),
+        //   tempo: 120,
+        //   iterations: 1,
+        //   timeSignature: 4,
+        //   sounds: {
+        //     meas: "",
+        //     quar: "",
+        //     eigh: "",
+        //     trip: "",
+        //     sixt: "",
+        //   },
+        //   volume: {
+        //     meas: -15,
+        //     quar: -15,
+        //     eigh: -15,
+        //     trip: -15,
+        //     sixt: -15,
+        //   },
+        // },
+      };
+    }
     case "selectPreset": {
+      const progIdx = state.programs.findIndex(
+        (program) => program.id === state.activeProgramId
+      );
+      const presIdx = state.programs[progIdx].presets.findIndex(
+        (preset) => preset.id === action.value
+      );
+      const preset = {
+        id: action.value,
+        title: state.programs[progIdx].presets[presIdx].title,
+        tempo: state.programs[progIdx].presets[presIdx].tempo,
+        iterations: state.programs[progIdx].presets[presIdx].iterations,
+        timeSignature: state.programs[progIdx].presets[presIdx].timeSignature,
+        sounds: {
+          meas: state.programs[progIdx].presets[presIdx].sounds.meas,
+          quar: state.programs[progIdx].presets[presIdx].sounds.quar,
+          eigh: state.programs[progIdx].presets[presIdx].sounds.eigh,
+          trip: state.programs[progIdx].presets[presIdx].sounds.trip,
+          sixt: state.programs[progIdx].presets[presIdx].sounds.sixt,
+        },
+        volume: {
+          meas: state.programs[progIdx].presets[presIdx].volume.meas,
+          quar: state.programs[progIdx].presets[presIdx].volume.quar,
+          eigh: state.programs[progIdx].presets[presIdx].volume.eigh,
+          trip: state.programs[progIdx].presets[presIdx].volume.trip,
+          sixt: state.programs[progIdx].presets[presIdx].volume.sixt,
+        },
+      };
       if (state.activePresetId === action.value) {
         return { ...state };
       } else
         return !state.activePresetId
-          ? { ...state, activePresetId: action.value }
+          ? { ...state, activePresetId: action.value, tempPresetValues: preset }
           : { ...state, activePresetId: undefined };
     }
+    case "removeActivePreset":
+      return {
+        ...state,
+        activePresetId: undefined,
+        changesMade: false,
+      };
     case "selectProgram": {
       if (state.activeProgramId === action.value) {
         return { ...state };
@@ -787,6 +874,7 @@ const reducer = (state, action) => {
         };
       }
     }
+
     case "bpmTap": {
       const timeNow = new Date().getTime();
       let tempo;
@@ -861,7 +949,6 @@ export const ToneContext = ({ children }) => {
 
   useEffect(() => {
     if (state.isPlaying) {
-      console.log(state.isPlaying);
       Tone.start();
       Tone.Transport.start();
     } else {

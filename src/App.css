@@ -103,7 +103,9 @@ body {
 .play,
 .stop,
 .createPreset,
-.tap {
+.tap,
+.saveChanges,
+.revert {
   background-color: #13aa52;
   border: 1px solid #13aa52;
   border-radius: 4px;
@@ -142,6 +144,12 @@ body {
   border: 1px solid #9606b3;
 }
 
+.saveChanges {
+}
+
+.revert {
+}
+
 .button-63:active,
 .button-63:hover {
   outline: 0;
@@ -166,4 +174,66 @@ body {
   .stop {
     padding: 10px 30px;
   }
+}
+
+.preset {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.presetHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  width: 550px;
+}
+
+.presetTitle {
+  font-size: 20px;
+  width: 150px;
+  border: none;
+}
+
+input[type="range"]:not(.tempoSlider) {
+  /* height: 200px; */
+  transform: translateY(60px) rotate(270deg);
+}
+
+input[type="number"] {
+  height: "20px";
+  width: "40px";
+  text-align: center;
+}
+
+.tempoEdit {
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.tempo,
+.signature,
+.measures {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.soundControlContainer {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.soundControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.verticalRange {
+  height: 150px;
 }
