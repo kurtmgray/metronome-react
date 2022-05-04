@@ -150,30 +150,11 @@ body {
 .revert {
 }
 
-.button-63:active,
-.button-63:hover {
-  outline: 0;
-}
-
-@media (min-width: 768px) {
-  .button-63 {
-    font-size: 24px;
-    min-width: 196px;
-  }
-}
-
 .play:hover,
 .stop:hover,
 .createPreset:hover {
   box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
-}
-
-@media (min-width: 768px) {
-  .play,
-  .stop {
-    padding: 10px 30px;
-  }
 }
 
 .preset {
@@ -197,14 +178,17 @@ body {
 }
 
 input[type="range"]:not(.tempoSlider) {
-  /* height: 200px; */
-  transform: translateY(60px) rotate(270deg);
+  transform: translateY(60px) translateX(-18px) rotate(270deg);
 }
 
 input[type="number"] {
   height: "20px";
   width: "40px";
   text-align: center;
+}
+
+select {
+  width: 100px;
 }
 
 .tempoEdit {
@@ -236,4 +220,5 @@ input[type="number"] {
 
 .verticalRange {
   height: 150px;
+  width: 100px;
 }
