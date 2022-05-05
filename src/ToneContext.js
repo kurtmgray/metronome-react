@@ -13,7 +13,7 @@ const initialState = {
   isPlaying: false,
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
-  currentBeat: 1,
+  currentBeat: 0,
   mastVol: -15,
   measVol: -15,
   quarVol: -15,
@@ -53,77 +53,78 @@ const initialState = {
       sixt: -15,
     },
   },
-  programs: [
-    {
-      title: "Hard Coded",
-      id: uuidv4(),
-      presets: [
-        {
-          id: uuidv4(),
-          title: "First",
-          tempo: 160,
-          iterations: 2,
-          timeSignature: 4,
-          sounds: {
-            meas: "http://127.0.0.1:5501/sounds/boom.wav",
-            quar: "http://127.0.0.1:5501/sounds/kick.wav",
-            eigh: "http://127.0.0.1:5501/sounds/ride.wav",
-            trip: "http://127.0.0.1:5501/sounds/snare.wav",
-            sixt: "http://127.0.0.1:5501/sounds/tink.wav",
-          },
-          volume: {
-            meas: -15,
-            quar: -20,
-            eigh: -15,
-            trip: -11,
-            sixt: -15,
-          },
-        },
-        {
-          id: uuidv4(),
-          title: "Middle",
-          tempo: 100,
-          iterations: 1,
-          timeSignature: 4,
-          sounds: {
-            meas: "http://127.0.0.1:5501/sounds/ride.wav",
-            quar: "http://127.0.0.1:5501/sounds/boom.wav",
-            eigh: "http://127.0.0.1:5501/sounds/snare.wav",
-            trip: "http://127.0.0.1:5501/sounds/tink.wav",
-            sixt: "http://127.0.0.1:5501/sounds/hihat.wav",
-          },
-          volume: {
-            meas: -15,
-            quar: -15,
-            eigh: -15,
-            trip: -15,
-            sixt: -15,
-          },
-        },
-        {
-          id: uuidv4(),
-          title: "Last",
-          tempo: 120,
-          iterations: 1,
-          timeSignature: 4,
-          sounds: {
-            meas: "http://127.0.0.1:5501/sounds/snare.wav",
-            quar: "http://127.0.0.1:5501/sounds/ride.wav",
-            eigh: "http://127.0.0.1:5501/sounds/kick.wav",
-            trip: "http://127.0.0.1:5501/sounds/tink.wav",
-            sixt: "http://127.0.0.1:5501/sounds/snare.wav",
-          },
-          volume: {
-            meas: -15,
-            quar: -15,
-            eigh: -15,
-            trip: -15,
-            sixt: -15,
-          },
-        },
-      ],
-    },
-  ],
+  programs: JSON.parse(localStorage.getItem("programs")) || [],
+  // [
+  //   {
+  //     title: "Hard Coded",
+  //     id: uuidv4(),
+  //     presets: [
+  //       {
+  //         id: uuidv4(),
+  //         title: "First",
+  //         tempo: 160,
+  //         iterations: 2,
+  //         timeSignature: 4,
+  //         sounds: {
+  //           meas: "http://127.0.0.1:5501/sounds/boom.wav",
+  //           quar: "http://127.0.0.1:5501/sounds/kick.wav",
+  //           eigh: "http://127.0.0.1:5501/sounds/ride.wav",
+  //           trip: "http://127.0.0.1:5501/sounds/snare.wav",
+  //           sixt: "http://127.0.0.1:5501/sounds/tink.wav",
+  //         },
+  //         volume: {
+  //           meas: -15,
+  //           quar: -20,
+  //           eigh: -15,
+  //           trip: -11,
+  //           sixt: -15,
+  //         },
+  //       },
+  //       {
+  //         id: uuidv4(),
+  //         title: "Middle",
+  //         tempo: 100,
+  //         iterations: 1,
+  //         timeSignature: 4,
+  //         sounds: {
+  //           meas: "http://127.0.0.1:5501/sounds/ride.wav",
+  //           quar: "http://127.0.0.1:5501/sounds/boom.wav",
+  //           eigh: "http://127.0.0.1:5501/sounds/snare.wav",
+  //           trip: "http://127.0.0.1:5501/sounds/tink.wav",
+  //           sixt: "http://127.0.0.1:5501/sounds/hihat.wav",
+  //         },
+  //         volume: {
+  //           meas: -15,
+  //           quar: -15,
+  //           eigh: -15,
+  //           trip: -15,
+  //           sixt: -15,
+  //         },
+  //       },
+  //       {
+  //         id: uuidv4(),
+  //         title: "Last",
+  //         tempo: 120,
+  //         iterations: 1,
+  //         timeSignature: 4,
+  //         sounds: {
+  //           meas: "http://127.0.0.1:5501/sounds/snare.wav",
+  //           quar: "http://127.0.0.1:5501/sounds/ride.wav",
+  //           eigh: "http://127.0.0.1:5501/sounds/kick.wav",
+  //           trip: "http://127.0.0.1:5501/sounds/tink.wav",
+  //           sixt: "http://127.0.0.1:5501/sounds/snare.wav",
+  //         },
+  //         volume: {
+  //           meas: -15,
+  //           quar: -15,
+  //           eigh: -15,
+  //           trip: -15,
+  //           sixt: -15,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // ],
 };
 
 const initialMethods = {
@@ -793,6 +794,7 @@ const reducer = (state, action) => {
       };
     case "selectProgram": {
       if (state.activeProgramId === action.value) {
+        console.log("same");
         return { ...state };
       } else
         return !state.activeProgramId
@@ -874,7 +876,22 @@ const reducer = (state, action) => {
         };
       }
     }
+    case "currentBeat": {
+      if (state.currentBeat >= state.beatsPerMeasure) {
+        console.log("mas");
+        return {
+          ...state,
+          currentBeat: 0,
+        };
+      } else {
+        console.log("other");
 
+        return {
+          ...state,
+          currentBeat: state.currentBeat + 1,
+        };
+      }
+    }
     case "bpmTap": {
       const timeNow = new Date().getTime();
       let tempo;
@@ -897,6 +914,23 @@ const reducer = (state, action) => {
         tempo: tempo ? tempo : state.tempo,
       };
     }
+    case "getPrograms":
+      return {
+        ...state,
+        programs: action.value,
+      };
+    case "deleteProgram": {
+      const index = state.programs.findIndex(
+        (program) => program.id === action.value
+      );
+      const newPrograms = [...state.programs];
+      newPrograms.splice(index, 1);
+      console.log(newPrograms);
+      return {
+        ...state,
+        programs: newPrograms,
+      };
+    }
     default:
       return state;
   }
@@ -914,6 +948,14 @@ export const ToneContext = ({ children }) => {
   const eighLoop = useRef();
   const tripLoop = useRef();
   const sixtLoop = useRef();
+
+  useEffect(() => {
+    localStorage.setItem("programs", JSON.stringify(state.programs));
+    const programs = JSON.parse(localStorage.getItem("programs"));
+    if (programs) {
+      dispatch({ type: "getPrograms", value: programs });
+    }
+  }, [state.programs]);
 
   useEffect(() => {
     measSound.current = new Tone.Player(state.measUrl, () => {
@@ -948,7 +990,7 @@ export const ToneContext = ({ children }) => {
   ]);
 
   useEffect(() => {
-    if (state.isPlaying) {
+    if (state.isPlaying && !state.activeProgramId) {
       Tone.start();
       Tone.Transport.start();
     } else {
@@ -960,6 +1002,10 @@ export const ToneContext = ({ children }) => {
       tripLoop.current.stop();
       sixtLoop.current.stop();
     }
+    Tone.Transport.scheduleRepeat((time) => {
+      dispatch({ type: "currentBeat" });
+    }, "4n");
+
     Tone.Transport.bpm.value = state.tempo;
     Tone.Transport.set({
       timeSignature: state.beatsPerMeasure,
@@ -1024,6 +1070,7 @@ export const ToneContext = ({ children }) => {
     state.eighVol,
     state.tripVol,
     state.sixtVol,
+    state.activeProgramId,
   ]);
 
   const length = (item) => {
@@ -1046,10 +1093,13 @@ export const ToneContext = ({ children }) => {
   useEffect(() => {
     if (state.activeProgramId && state.programMode && state.isPlaying) {
       Tone.start();
+
       const activeProgram = state.programs.find(
         (program) => program.id === state.activeProgramId
       );
+
       let runningTotalIterations = 0;
+
       const startMeasures = activeProgram.presets.map(({ iterations }, i) => {
         let result = runningTotalIterations;
         runningTotalIterations += iterations;
@@ -1060,6 +1110,10 @@ export const ToneContext = ({ children }) => {
         Tone.Transport.stop();
         dispatch({ type: "stop" });
       }, runningTotalIterations + "m");
+
+      Tone.Transport.schedule((time) => {
+        console.log("hi");
+      }, "4n");
 
       activeProgram.presets.map((preset, i) => {
         Tone.Transport.schedule((time) => {
@@ -1100,7 +1154,7 @@ export const ToneContext = ({ children }) => {
   }, [
     state.isPlaying,
     state.activeProgramId,
-    state.programs,
+    // state.programs,
     state.programMode,
   ]);
 
@@ -1109,12 +1163,13 @@ export const ToneContext = ({ children }) => {
       Tone.Transport.cancel(0);
     },
     handleSelectProgram: (e) => {
-      if (state.activeProgramId) {
-        console.log("already have an id");
+      if (state.activeProgramId === e.target.id) {
+        console.log("already have this id");
       } else {
         const activeProgram = state.programs.find(
           (program) => program.id === e.target.id
         );
+        console.log(activeProgram);
         dispatch({ type: "selectProgram", value: activeProgram.id });
       }
     },
@@ -1125,7 +1180,7 @@ export const ToneContext = ({ children }) => {
         presets: [],
       };
       dispatch({ type: "addProgram", value: program });
-      // also save programs array to local storage
+      // localStorage.setItem("programs", JSON.stringify(state.programs));
     },
     handleCancelNewPreset: () => {
       dispatch({ type: "createPreset" });

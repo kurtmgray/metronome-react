@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useStateContext } from "../ToneContext";
 import sounds from "../Sounds";
 
 export default function Metronome() {
   const [state, dispatch] = useStateContext();
 
+  useEffect(() => {
+    dispatch({ type: "selectProgram" });
+  }, []);
+
   return (
-    <div>
+    <div className="metronome">
       <div className="controls" id="controls">
         <div className="mainDisplay">
           <div className="tempoDisplay">
@@ -306,10 +310,10 @@ export default function Metronome() {
           </button>
         ) : null}
       </div>
-      <pre>
+      {/* <pre>
         App State:
         {JSON.stringify(state, null, "\t")}
-      </pre>
+      </pre> */}
     </div>
   );
 }

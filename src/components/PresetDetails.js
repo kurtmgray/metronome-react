@@ -378,11 +378,11 @@ export default function CreatePreset() {
         <button
           className="saveChanges"
           id={state.activeProgramId}
-          onClick={() => {
+          onClick={() =>
             state.activePresetId
               ? dispatch({ type: "removeActivePreset" })
-              : dispatch({ type: "addPreset" });
-          }}
+              : dispatch({ type: "addPreset" })
+          }
           disabled={!state.activeProgramId}
         >
           {state.activePresetId ? "Save Changes" : "Save Preset"}
@@ -390,7 +390,9 @@ export default function CreatePreset() {
         {state.activePresetId ? (
           <button
             className="revert"
-            onClick={() => dispatch({ type: "revertPresetChanges" })}
+            onClick={() => {
+              dispatch({ type: "revertPresetChanges" });
+            }}
             disabled={!state.changesMade}
           >
             Revert

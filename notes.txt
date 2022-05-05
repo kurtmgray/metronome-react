@@ -98,7 +98,8 @@ Things to implement:
 			(SOLUTION) increase lookahead and delay start time, still not perfect when dragging slider
 
 		Time Signature changes have no effect
-		Time signature works, but loop start measures still based on 4.
+		Time signature works(sort of), but loop start/stop measures still based on 4.
+		Tone.Transport.scheduleRepeat to update current beat in state, but makes two calls/increments by two
 
 		(SOLVED)Call a function to stop Tone.Transport once the program is done playing.
 			(SOLUTION) used Tone.Transport.schedule() to schedule stop() and dispatch() using runningTotalMeasures
@@ -113,21 +114,18 @@ TODO TODAY:
 
 	DND for programs AND presets
 		separate components for edit mode and display mode?
-	ADD PROGRAM functionality
+	Edit Program
+		DND 
+
+	Beat draw
+
+	Time Signature fix
 	
-
-	EDIT program
-		basically just order of presets, using DND
-	EDIT preset
-		use tempPresetValues for selected preset?
-		use activePreset to store preset ID, filter through presets to update
-
-	CONFIG FILE for all of the sound URLs
-		sounds.boom
-		sounds.tink 
-		etc
-
-
+	
+	
+	
+	
+	Add sounds
 
 TODO TOMORROW:
 

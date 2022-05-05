@@ -2,12 +2,15 @@ import React, { useEffect } from "react";
 import Preset from "./Preset";
 import CreatePreset from "./PresetDetails";
 import { useStateContext } from "../ToneContext";
-
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 export default function Program() {
   const [state, dispatch] = useStateContext();
-  useEffect(() => {
-    console.log("render");
-  }, [state.activeProgramId]);
+  useEffect(() => {}, [state.activeProgramId]);
+
+  const presetsInProgram =
+    state.programs.find((program) => program.id === state.activeProgramId)
+      .presets.length > 0;
+
   return (
     <div>
       <div className="program">
@@ -22,18 +25,48 @@ export default function Program() {
             dispatch({ type: "programTitle", value: e.target.value });
           }}
         />
-        <div className="presetContainer">
-          {state.programs.map((program) =>
-            program.id === state.activeProgramId
-              ? program.presets.map((preset) => (
-                  <Preset key={preset.id} preset={preset} />
-                ))
-              : null
-          )}
-        </div>
+        {presetsInProgram ? (
+          <DragDropContext>
+            <Droppable droppableId="presets">
+              {(provided) => {
+                <div
+                  className="presetContainer"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {state.programs.map((program) =>
+                    program.id === state.activeProgramId
+                      ? program.presets.map((preset, index) => (
+                          <Draggable
+                            key={preset.id}
+                            draggableId={preset.id}
+                            index={index}
+                          >
+                            {(provided) => {
+                              <div
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                ref={provided.innerRef}
+                              >
+                                <Preset key={preset.id} preset={preset} />;
+                              </div>;
+                            }}
+                          </Draggable>
+                        ))
+                      : null
+                  )}
+                </div>;
+              }}
+            </Droppable>
+          </DragDropContext>
+        ) : null}
         <div className="programControls">
           {!state.isPlaying ? (
-            <button className="play" onClick={() => dispatch({ type: "play" })}>
+            <button
+              className="play"
+              onClick={() => dispatch({ type: "play" })}
+              disabled={!presetsInProgram}
+            >
               Play Program
             </button>
           ) : (

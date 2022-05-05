@@ -1,5 +1,6 @@
 body {
   margin: 0px;
+  background-color: #a1a1a1;
 }
 
 .main {
@@ -16,6 +17,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #45a29e;
   /* padding: 1rem;  */
 }
 
@@ -53,6 +55,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.metronome {
+  background-color: white;
+  padding-bottom: 1rem;
 }
 
 .metButtons {
@@ -105,7 +112,8 @@ body {
 .createPreset,
 .tap,
 .saveChanges,
-.revert {
+.revert,
+.addProgram {
   background-color: #13aa52;
   border: 1px solid #13aa52;
   border-radius: 4px;
@@ -134,7 +142,9 @@ body {
   border: 1px solid #ff4742;
 }
 
-.createPreset {
+.createPreset,
+.addProgram,
+.saveChanges {
   background: #0673b3;
   border: 1px solid #0673b3;
 }
@@ -144,15 +154,14 @@ body {
   border: 1px solid #9606b3;
 }
 
-.saveChanges {
-}
-
 .revert {
 }
 
 .play:hover,
 .stop:hover,
-.createPreset:hover {
+.createPreset:hover,
+.saveChanges:hover,
+.revert:hover .addProgram:hover {
   box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }
@@ -221,4 +230,22 @@ select {
 .verticalRange {
   height: 150px;
   width: 100px;
+}
+
+.programs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+}
+
+.programBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px;
+  padding: 0.5rem;
+  width: 400px;
+  background-color: #d6d6d6;
 }
