@@ -13,7 +13,7 @@ const initialState = {
   isPlaying: false,
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
-  currentBeat: 0,
+  currentBeat: null,
   mastVol: -15,
   measVol: -15,
   quarVol: -15,
@@ -794,7 +794,6 @@ const reducer = (state, action) => {
       };
     case "selectProgram": {
       if (state.activeProgramId === action.value) {
-        console.log("same");
         return { ...state };
       } else
         return !state.activeProgramId
@@ -881,7 +880,7 @@ const reducer = (state, action) => {
         console.log("mas");
         return {
           ...state,
-          currentBeat: 0,
+          currentBeat: 1,
         };
       } else {
         console.log("other");
@@ -925,10 +924,30 @@ const reducer = (state, action) => {
       );
       const newPrograms = [...state.programs];
       newPrograms.splice(index, 1);
-      console.log(newPrograms);
       return {
         ...state,
         programs: newPrograms,
+      };
+    }
+    case "deletePreset": {
+      const currentProg = state.programs.find(
+        (program) => program.id === state.activeProgramId
+      );
+      const index = currentProg.presets.findIndex(
+        (preset) => preset.id === state.activePresetId
+      );
+      const presets = [...currentProg.presets];
+      presets.splice(index, 1);
+      return {
+        ...state,
+        programs: state.programs.map((program) =>
+          program.id === state.activeProgramId
+            ? {
+                ...program,
+                presets: presets,
+              }
+            : program
+        ),
       };
     }
     default:
@@ -991,6 +1010,14 @@ export const ToneContext = ({ children }) => {
 
   useEffect(() => {
     if (state.isPlaying && !state.activeProgramId) {
+      Tone.Transport.set({
+        timeSignature: state.beatsPerMeasure,
+      });
+      Tone.Transport.scheduleRepeat((time) => {
+        dispatch({ type: "currentBeat" });
+      }, "4n");
+      Tone.Transport.lookAhead = 100;
+      Tone.Transport.bpm.value = state.tempo;
       Tone.start();
       Tone.Transport.start();
     } else {
@@ -1002,15 +1029,7 @@ export const ToneContext = ({ children }) => {
       tripLoop.current.stop();
       sixtLoop.current.stop();
     }
-    Tone.Transport.scheduleRepeat((time) => {
-      dispatch({ type: "currentBeat" });
-    }, "4n");
 
-    Tone.Transport.bpm.value = state.tempo;
-    Tone.Transport.set({
-      timeSignature: state.beatsPerMeasure,
-    });
-    Tone.Transport.lookAhead = 100;
     if (
       state.isPlaying &&
       !state.programMode &&
@@ -1193,6 +1212,7 @@ export const ToneContext = ({ children }) => {
       const presIdx = state.programs[progIdx].presets.findIndex(
         (preset) => preset.id === state.activePresetId
       );
+      // console.log(state.activePresetId, state.activeProgramId);
       return state.programs[progIdx].presets[presIdx][property];
     },
     getNestedPresetValue: (parent, child) => {

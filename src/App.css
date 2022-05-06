@@ -72,6 +72,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: white;
 }
 
 .presetContainer {
@@ -113,7 +114,8 @@ body {
 .tap,
 .saveChanges,
 .revert,
-.addProgram {
+.addProgram,
+.deletePreset {
   background-color: #13aa52;
   border: 1px solid #13aa52;
   border-radius: 4px;
@@ -137,7 +139,8 @@ body {
   margin: 0.5rem;
 }
 
-.stop {
+.stop,
+.deletePreset {
   background: #ff4742;
   border: 1px solid #ff4742;
 }
@@ -161,7 +164,9 @@ body {
 .stop:hover,
 .createPreset:hover,
 .saveChanges:hover,
-.revert:hover .addProgram:hover {
+.revert:hover,
+.addProgram:hover,
+.deletePreset:hover {
   box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }

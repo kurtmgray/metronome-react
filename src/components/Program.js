@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
 import Preset from "./Preset";
-import CreatePreset from "./PresetDetails";
+import PresetDetails from "./PresetDetails";
 import { useStateContext } from "../ToneContext";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 export default function Program() {
   const [state, dispatch] = useStateContext();
-  useEffect(() => {}, [state.activeProgramId]);
-
-  const presetsInProgram =
-    state.programs.find((program) => program.id === state.activeProgramId)
-      .presets.length > 0;
 
   return (
     <div>
@@ -25,47 +20,56 @@ export default function Program() {
             dispatch({ type: "programTitle", value: e.target.value });
           }}
         />
-        {presetsInProgram ? (
-          <DragDropContext>
-            <Droppable droppableId="presets">
-              {(provided) => {
-                <div
-                  className="presetContainer"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {state.programs.map((program) =>
-                    program.id === state.activeProgramId
-                      ? program.presets.map((preset, index) => (
-                          <Draggable
-                            key={preset.id}
-                            draggableId={preset.id}
-                            index={index}
-                          >
-                            {(provided) => {
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <Preset key={preset.id} preset={preset} />;
-                              </div>;
-                            }}
-                          </Draggable>
-                        ))
-                      : null
-                  )}
-                </div>;
-              }}
-            </Droppable>
-          </DragDropContext>
-        ) : null}
+        {state.activeProgramId &&
+        state.programs.find((program) => program.id === state.activeProgramId)
+          .presets.length > 0 ? (
+          // <DragDropContext>
+          //   <Droppable droppableId="presets">
+          //     {(provided) => {
+          <div
+            className="presetContainer"
+            // {...provided.droppableProps}
+            // ref={provided.innerRef}
+          >
+            {state.programs.map((program) =>
+              program.id === state.activeProgramId
+                ? program.presets.map((preset, index) => (
+                    // <Draggable
+                    //   key={preset.id}
+                    //   draggableId={preset.id}
+                    //   index={index}
+                    // >
+                    //   {(provided) => {
+                    <div>
+                      <Preset
+                        key={preset.id}
+                        preset={preset}
+                        // innerRef={provided.innerRef}
+                        // provided={provided}
+                      />
+                      ;
+                    </div>
+                    // }}
+                    // </Draggable>
+                  ))
+                : null
+            )}
+          </div>
+        ) : //     }}
+        //   </Droppable>
+        // </DragDropContext>
+        null}
         <div className="programControls">
           {!state.isPlaying ? (
             <button
               className="play"
               onClick={() => dispatch({ type: "play" })}
-              disabled={!presetsInProgram}
+              disabled={
+                state.activeProgramId &&
+                !state.programs.find(
+                  (program) => program.id === state.activeProgramId
+                ).presets.length > 0
+              }
             >
               Play Program
             </button>
@@ -99,7 +103,7 @@ export default function Program() {
       >
         View Programs
       </button> */}
-        {(state.createPresetMode || state.activePresetId) && <CreatePreset />}
+        {(state.createPresetMode || state.activePresetId) && <PresetDetails />}
       </div>
       <pre>
         App State:

@@ -2,7 +2,7 @@ import React from "react";
 import { useStateContext } from "../ToneContext";
 import sounds from "../Sounds";
 
-export default function CreatePreset() {
+export default function PresetDetails() {
   const [state, dispatch] = useStateContext();
 
   return (
@@ -385,18 +385,28 @@ export default function CreatePreset() {
           }
           disabled={!state.activeProgramId}
         >
-          {state.activePresetId ? "Save Changes" : "Save Preset"}
+          {state.activePresetId ? "Close Preset" : "Save Preset"}
         </button>
         {state.activePresetId ? (
-          <button
-            className="revert"
-            onClick={() => {
-              dispatch({ type: "revertPresetChanges" });
-            }}
-            disabled={!state.changesMade}
-          >
-            Revert
-          </button>
+          <>
+            <button
+              className="revert"
+              onClick={() => {
+                dispatch({ type: "revertPresetChanges" });
+              }}
+              disabled={!state.changesMade}
+            >
+              Revert
+            </button>
+            <button
+              className="deletePreset"
+              onClick={() => {
+                dispatch({ type: "deletePreset" });
+              }}
+            >
+              Delete
+            </button>
+          </>
         ) : (
           <button onClick={state.handleCancelNewPreset}>Cancel</button>
         )}
