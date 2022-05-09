@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useStateContext } from "../ToneContext";
+import classNames from "classnames";
 import sounds from "../Sounds";
 
 export default function Metronome() {
@@ -9,12 +10,67 @@ export default function Metronome() {
     dispatch({ type: "selectProgram" });
   }, []);
 
+  const drawClass1 = classNames("note", {
+    active: state.activeDrawNotes[1],
+  });
+  const drawClass2 = classNames("note", {
+    active: state.activeDrawNotes[2],
+  });
+  const drawClass3 = classNames("note", {
+    active: state.activeDrawNotes[3],
+  });
+  const drawClass4 = classNames("note", {
+    active: state.activeDrawNotes[4],
+  });
+  const drawClass5 = classNames("note", {
+    active: state.activeDrawNotes[5],
+  });
+  const drawClass6 = classNames("note", {
+    active: state.activeDrawNotes[6],
+  });
+  const drawClass7 = classNames("note", {
+    active: state.activeDrawNotes[7],
+  });
+  const drawClass8 = classNames("note", {
+    active: state.activeDrawNotes[8],
+  });
+  const drawClass9 = classNames("note", {
+    active: state.activeDrawNotes[9],
+  });
+  const drawClass10 = classNames("note", {
+    active: state.activeDrawNotes[10],
+  });
+  const drawClass11 = classNames("note", {
+    active: state.activeDrawNotes[11],
+  });
+  const drawClass12 = classNames("note", {
+    active: state.activeDrawNotes[12],
+  });
+  const drawClass13 = classNames("note", {
+    active: state.activeDrawNotes[13],
+  });
+
   return (
     <div className="metronome">
       <div className="controls" id="controls">
         <div className="mainDisplay">
           <div className="tempoDisplay">
             <h1>{state.tempo}</h1>
+          </div>
+          <div id="notes">
+            <div id="" className={drawClass1}></div>
+            <div id="" className={drawClass2}></div>
+            <div id="" className={drawClass3}></div>
+            <div id="" className={drawClass4}></div>
+            <div id="" className={drawClass5}></div>
+            <div id="" className={drawClass6}></div>
+            <div id="" className={drawClass7}></div>
+            <div id="" className={drawClass8}></div>
+            <div id="" className={drawClass9}></div>
+            <div id="" className={drawClass10}></div>
+            <div id="" className={drawClass11}></div>
+            <div id="" className={drawClass12}></div>
+            <div id="" className={drawClass13}></div>
           </div>
           <div className="beatInfo">
             <div className="beatsPerDisplay">
@@ -280,9 +336,7 @@ export default function Metronome() {
           </div>
         </div>
       </div>
-      <div>
-        <span id="beat">Beat 1</span>
-      </div>
+
       <div className="metButtons">
         <button className="tap" onClick={() => dispatch({ type: "bpmTap" })}>
           Tap to Set Tempo
@@ -310,10 +364,10 @@ export default function Metronome() {
           </button>
         ) : null}
       </div>
-      {/* <pre>
+      <pre>
         App State:
         {JSON.stringify(state, null, "\t")}
-      </pre> */}
+      </pre>
     </div>
   );
 }

@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import Preset from "./Preset";
 import PresetDetails from "./PresetDetails";
 import { useStateContext } from "../ToneContext";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 export default function Program() {
   const [state, dispatch] = useStateContext();
 
@@ -12,10 +13,14 @@ export default function Program() {
         <input
           className="programTitle"
           type="text"
-          id={state.activeProgramId}
-          value={state.programs.map((program) =>
-            program.id === state.activeProgramId ? program.title : null
-          )}
+          // id should be used for styling only
+          // id={state.activeProgramId}
+          data-whatever={state.activeProgramId}
+          value={
+            state.programs.find(
+              (program) => program.id === state.activeProgramId
+            ).title
+          }
           onChange={(e) => {
             dispatch({ type: "programTitle", value: e.target.value });
           }}
@@ -47,7 +52,6 @@ export default function Program() {
                         // innerRef={provided.innerRef}
                         // provided={provided}
                       />
-                      ;
                     </div>
                     // }}
                     // </Draggable>

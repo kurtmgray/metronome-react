@@ -99,12 +99,7 @@ Things to implement:
 
 		Time Signature changes have no effect
 		Time signature works(sort of), but loop start/stop measures still based on 4.
-		Tone.Transport.scheduleRepeat to update current beat in state, but makes two calls/increments by two
-		Selecting adds program adds commas to title ?
-		Opening program adds semi colons to preset...
-		selecting a preset triggers 1215 console.log loop... (rerendering of PresetDetails?)
-		issue deleting preset...
-
+		
 
 		(SOLVED)Call a function to stop Tone.Transport once the program is done playing.
 			(SOLUTION) used Tone.Transport.schedule() to schedule stop() and dispatch() using runningTotalMeasures
@@ -124,6 +119,9 @@ TODO TODAY:
 	Beat draw
 
 	Time Signature fix
+		UPDATE: time sig update lags 1 behind state...
+
+	
 	
 	
 	
@@ -133,7 +131,7 @@ TODO TODAY:
 
 TODO TOMORROW:
 
-
+USE MORE HELPER FUNCTIONS... getting indexes, etc.
 
 
 
