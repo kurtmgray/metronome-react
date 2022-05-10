@@ -1,36 +1,36 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useDrop } from "react-dnd";
 import { useStateContext } from "../ToneContext";
+import { ItemTypes } from "../utils/itemTypes";
+import ProgramBar from "./ProgramBar";
 
 export default function Program() {
   const [state, dispatch] = useStateContext();
+  const [{ isOver }, drop] = useDrop({
+    accept: ItemTypes.CARD,
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
+
   useEffect(() => {
     dispatch({ type: "selectProgram" });
   }, []);
+
   return (
     <div className="programs">
       <h2>Select a Program</h2>
-      {state.programs.length ? (
-        state.programs.map((program) => (
-          <div className="programBar" id={program.id} key={program.id}>
-            <Link to="/program">
-              <p id={program.id} onClick={(e) => state.handleSelectProgram(e)}>
-                {program.title}
-              </p>
-            </Link>
-            <button
-              id={program.id}
-              onClick={(e) => {
-                dispatch({ type: "deleteProgram", value: e.target.id });
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        ))
-      ) : (
-        <p>You currently have no programs.</p>
-      )}
+      <div
+        className="programBarContainer"
+        ref={drop}
+        style={{ backgroundColor: isOver ? "green" : null }}
+      >
+        {state.programs.length ? (
+          state.programs.map((program) => <ProgramBar program={program} />)
+        ) : (
+          <p>You currently have no programs.</p>
+        )}
+      </div>
       <button
         id="addProgram"
         className="addProgram"

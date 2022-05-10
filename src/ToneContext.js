@@ -5,23 +5,16 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import * as Tone from "tone";
 import sounds from "./Sounds";
 import { v4 as uuidv4 } from "uuid";
+import { scheduleDraw, length } from "./Utilities";
 
 const initialState = {
   isPlaying: false,
-  activeDrawNotes: {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-    6: false,
-    7: false,
-    8: false,
-  },
-  movingRight: false,
+  activeDrawNotes: {},
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
   currentBeat: null,
@@ -93,11 +86,6 @@ const reducer = (state, action) => {
           ...state.activeDrawNotes,
           [action.value]: !state.activeDrawNotes[action.value],
         },
-      };
-    case "toggleMovingRight":
-      return {
-        ...state,
-        movingRight: !state.movingRight,
       };
     case "beatsPerMeasure":
       return { ...state, beatsPerMeasure: action.value };
@@ -898,123 +886,7 @@ export const ToneContext = ({ children }) => {
       measSound.current.start(time);
     }, "1m");
     quarLoop.current = new Tone.Loop((time) => {
-      const determineTime = (i) => {
-        switch (i) {
-          case 1:
-            return "0:0:0";
-          case 2:
-            return "0:0:2";
-          case 3:
-            return "0:0:3";
-          case 4:
-            return "0:0:4";
-        }
-      };
       quarSound.current.start(time);
-      // const scheduleDraw = () => {
-      //   if (state.movingRight) {
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 1 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 1 });
-      //       }, 100);
-      //     }, time);
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 2 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 2 });
-      //       }, 100);
-      //     }, "+3i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 3 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 3 });
-      //       }, 100);
-      //     }, "+6i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 4 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 4 });
-      //       }, 100);
-      //     }, "+9i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 5 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 5 });
-      //       }, 100);
-      //     }, "+12i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 6 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 6 });
-      //       }, 100);
-      //     }, "+15i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 7 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 7 });
-      //       }, 100);
-      //     }, "+18i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 8 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 8 });
-      //       }, 100);
-      //       dispatch({ type: "toggleMovingRight" });
-      //     }, "+21i");
-      //   } else {
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 9 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 9 });
-      //       }, 100);
-      //     }, time);
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 8 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 8 });
-      //       }, 100);
-      //     }, "+3i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 7 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 7 });
-      //       }, 100);
-      //     }, "+6i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 6 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 6 });
-      //       }, 100);
-      //     }, "+9i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 5 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 5 });
-      //       }, 100);
-      //     }, "+12i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 4 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 4 });
-      //       }, 100);
-      //     }, "+15i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 3 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 3 });
-      //       }, 100);
-      //     }, "+18i");
-      //     Tone.Draw.schedule(() => {
-      //       dispatch({ type: "toggleActiveDrawNote", value: 2 });
-      //       setTimeout(() => {
-      //         dispatch({ type: "toggleActiveDrawNote", value: 2 });
-      //       }, 100);
-      //       dispatch({ type: "toggleMovingRight" });
-      //     }, "+21i");
-      //   }
-      // };
-      // scheduleDraw();
     }, "4n");
     eighLoop.current = new Tone.Loop((time) => {
       eighSound.current.start(time);
@@ -1035,104 +907,12 @@ export const ToneContext = ({ children }) => {
   ]);
 
   useEffect(() => {
-    Tone.start();
-    Tone.Transport.PPQ = 24;
-
-    if (state.isPlaying && !state.activeProgramId) {
-      console.log(Tone.Transport);
-      Tone.Transport.timeSignature = state.beatsPerMeasure;
-      Tone.Transport.scheduleRepeat((time) => {}, "4n");
-      Tone.Transport.lookAhead = 100;
-      Tone.Transport.bpm.value = state.tempo;
-      Tone.Transport.start();
-    } else {
-      Tone.Transport.stop();
-      Tone.Transport.cancel(0);
-      Tone.Draw.cancel();
-      measLoop.current.stop();
-      // measLoop.current.cancel(0);
-      quarLoop.current.stop();
-      // quarLoop.current.cancel(0);
-      eighLoop.current.stop();
-      // eighLoop.current.cancel(0);
-      tripLoop.current.stop();
-      // tripLoop.current.cancel(0);
-      sixtLoop.current.stop();
-      // sixtLoop.current.cancel(0);
-    }
-
-    if (
-      state.isPlaying &&
-      !state.programMode &&
-      measLoop.current.state === "stopped"
-    ) {
-      measSound.current.volume.value = state.measVol;
-      quarSound.current.volume.value = state.quarVol;
-      eighSound.current.volume.value = state.eighVol;
-      tripSound.current.volume.value = state.tripVol;
-      sixtSound.current.volume.value = state.sixtVol;
-      measLoop.current.start();
-      quarLoop.current.start();
-      eighLoop.current.start();
-      tripLoop.current.start();
-      sixtLoop.current.start();
-    } else if (measLoop.current.state === "started") {
-      console.log("started");
-      Tone.Transport.timeSignature = state.beatsPerMeasure;
-      measSound.current.volume.value = state.measVol;
-      quarSound.current.volume.value = state.quarVol;
-      eighSound.current.volume.value = state.eighVol;
-      tripSound.current.volume.value = state.tripVol;
-      sixtSound.current.volume.value = state.sixtVol;
-    }
-
-    if (state.measVol === -50) {
-      measSound.current.mute = true;
-    } else {
-      measSound.current.mute = false;
-    }
-    if (state.quarVol === -50) {
-      quarSound.current.mute = true;
-    } else {
-      quarSound.current.mute = false;
-    }
-    if (state.eighVol === -50) {
-      eighSound.current.mute = true;
-    } else {
-      eighSound.current.mute = false;
-    }
-    if (state.tripVol === -50) {
-      tripSound.current.mute = true;
-    } else {
-      tripSound.current.mute = false;
-    }
-    if (state.sixtVol === -50) {
-      sixtSound.current.mute = true;
-    } else {
-      sixtSound.current.mute = false;
-    }
-  }, [
-    state.tempo,
-    state.isPlaying,
-    state.beatsPerMeasure,
-    state.programMode,
-    state.measVol,
-    state.quarVol,
-    state.eighVol,
-    state.tripVol,
-    state.sixtVol,
-    state.activeProgramId,
-  ]);
-  useEffect(() => {
-    Tone.Transport.cancel(0);
+    Tone.Draw.cancel(0);
     Tone.Transport.scheduleRepeat((time) => {
       dispatch({ type: "currentBeat" });
-
-      // dispatch({ type: "toggleMovingRight" });
     }, "4n");
     Tone.Transport.scheduleRepeat((time) => {
       const scheduleDraw = () => {
-        // if (state.movingRight) {
         Tone.Draw.schedule(() => {
           dispatch({ type: "toggleActiveDrawNote", value: 1 });
           setTimeout(() => {
@@ -1276,13 +1056,91 @@ export const ToneContext = ({ children }) => {
           setTimeout(() => {
             dispatch({ type: "toggleActiveDrawNote", value: 2 });
           }, 100);
-          // dispatch({ type: "toggleMovingRight" });
         }, "+46i");
-        // }
       };
       scheduleDraw();
     }, "2n");
   }, [state.isPlaying]);
+
+  useEffect(() => {
+    if (state.isPlaying && !state.activeProgramId) {
+      Tone.start();
+      Tone.Transport.timeSignature = state.beatsPerMeasure;
+      Tone.Transport.lookAhead = 100;
+      Tone.Transport.bpm.value = state.tempo;
+      Tone.Transport.start();
+    } else {
+      Tone.Transport.stop();
+      Tone.Transport.cancel(0);
+      // Tone.Draw.cancel(0);
+      measLoop.current.stop();
+      quarLoop.current.stop();
+      eighLoop.current.stop();
+      tripLoop.current.stop();
+      sixtLoop.current.stop();
+    }
+
+    if (
+      state.isPlaying &&
+      !state.programMode &&
+      measLoop.current.state === "stopped"
+    ) {
+      measSound.current.volume.value = state.measVol;
+      quarSound.current.volume.value = state.quarVol;
+      eighSound.current.volume.value = state.eighVol;
+      tripSound.current.volume.value = state.tripVol;
+      sixtSound.current.volume.value = state.sixtVol;
+      measLoop.current.start();
+      quarLoop.current.start();
+      eighLoop.current.start();
+      tripLoop.current.start();
+      sixtLoop.current.start();
+    } else if (measLoop.current.state === "started") {
+      Tone.Transport.timeSignature = state.beatsPerMeasure;
+      measSound.current.volume.value = state.measVol;
+      quarSound.current.volume.value = state.quarVol;
+      eighSound.current.volume.value = state.eighVol;
+      tripSound.current.volume.value = state.tripVol;
+      sixtSound.current.volume.value = state.sixtVol;
+    }
+
+    if (state.measVol === -50) {
+      measSound.current.mute = true;
+    } else {
+      measSound.current.mute = false;
+    }
+    if (state.quarVol === -50) {
+      quarSound.current.mute = true;
+    } else {
+      quarSound.current.mute = false;
+    }
+    if (state.eighVol === -50) {
+      eighSound.current.mute = true;
+    } else {
+      eighSound.current.mute = false;
+    }
+    if (state.tripVol === -50) {
+      tripSound.current.mute = true;
+    } else {
+      tripSound.current.mute = false;
+    }
+    if (state.sixtVol === -50) {
+      sixtSound.current.mute = true;
+    } else {
+      sixtSound.current.mute = false;
+    }
+  }, [
+    state.tempo,
+    state.isPlaying,
+    state.beatsPerMeasure,
+    state.programMode,
+    state.measVol,
+    state.quarVol,
+    state.eighVol,
+    state.tripVol,
+    state.sixtVol,
+    state.activeProgramId,
+  ]);
 
   const length = (item) => {
     switch (item) {
@@ -1392,7 +1250,6 @@ export const ToneContext = ({ children }) => {
         presets: [],
       };
       dispatch({ type: "addProgram", value: program });
-      // localStorage.setItem("programs", JSON.stringify(state.programs));
     },
     handleCancelNewPreset: () => {
       dispatch({ type: "createPreset" });
@@ -1421,7 +1278,7 @@ export const ToneContext = ({ children }) => {
 
   return (
     <StateContext.Provider value={[{ ...state, ...methods }, dispatch]}>
-      {children}
+      <DndProvider backend={HTML5Backend}>{children}</DndProvider>
     </StateContext.Provider>
   );
 };
