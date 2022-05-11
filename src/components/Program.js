@@ -28,27 +28,15 @@ export default function Program() {
         {state.activeProgramId &&
         state.programs.find((program) => program.id === state.activeProgramId)
           .presets.length > 0 ? (
-          // <DragDropContext>
-          //   <Droppable droppableId="presets">
-          //     {(provided) => {
-          <div
-            className="presetContainer"
-            // {...provided.droppableProps}
-            // ref={provided.innerRef}
-          >
+          <div className="presetContainer">
             {state.programs.map((program) =>
               program.id === state.activeProgramId
                 ? program.presets.map((preset, index) => (
-                    // <Draggable
-                    //   key={preset.id}
-                    //   draggableId={preset.id}
-                    //   index={index}
-                    // >
-                    //   {(provided) => {
                     <div>
                       <Preset
                         key={preset.id}
                         preset={preset}
+                        index={index}
                         // innerRef={provided.innerRef}
                         // provided={provided}
                       />

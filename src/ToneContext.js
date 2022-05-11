@@ -852,6 +852,20 @@ const reducer = (state, action) => {
         changesMade: false,
       };
     }
+    case "reorderPrograms":
+      return {
+        ...state,
+        programs: action.value,
+      };
+    case "reorderPresets":
+      return {
+        ...state,
+        programs: state.programs.map((program) =>
+          program.id === state.activeProgramId
+            ? { ...program, presets: action.value }
+            : program
+        ),
+      };
     default:
       return state;
   }
@@ -1273,6 +1287,28 @@ export const ToneContext = ({ children }) => {
         (preset) => preset.id === state.activePresetId
       );
       return state.programs[progIdx].presets[presIdx][parent][child];
+    },
+    moveProgramBar: (hoverIndex, id) => {
+      const programs = state.programs;
+      const progIndex = programs.findIndex((program) => program.id === id);
+      const program = programs.find((program) => program.id === id);
+      programs.splice(progIndex, 1);
+      programs.splice(hoverIndex, 0, program);
+      dispatch({ type: "reorderPrograms", value: programs });
+      // console.log(programs);
+      // console.log(id);
+      // console.log("drag ", dragIndex);
+      // console.log("hover ", hoverIndex);
+    },
+    movePresetBox: (hoverIndex, id) => {
+      const program = state.programs.find(
+        (program) => program.id === state.activeProgramId
+      );
+      const presIndex = program.presets.findIndex((preset) => preset.id === id);
+      const preset = program.presets.find((preset) => preset.id === id);
+      program.presets.splice(presIndex, 1);
+      program.presets.splice(hoverIndex, 0, preset);
+      dispatch({ type: "reorderPresets", value: program.presets });
     },
   };
 

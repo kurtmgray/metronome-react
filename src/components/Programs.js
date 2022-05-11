@@ -1,17 +1,9 @@
 import React, { useEffect } from "react";
-import { useDrop } from "react-dnd";
 import { useStateContext } from "../ToneContext";
-import { ItemTypes } from "../utils/itemTypes";
 import ProgramBar from "./ProgramBar";
 
 export default function Program() {
   const [state, dispatch] = useStateContext();
-  const [{ isOver }, drop] = useDrop({
-    accept: ItemTypes.CARD,
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
 
   useEffect(() => {
     dispatch({ type: "selectProgram" });
@@ -22,11 +14,13 @@ export default function Program() {
       <h2>Select a Program</h2>
       <div
         className="programBarContainer"
-        ref={drop}
-        style={{ backgroundColor: isOver ? "green" : null }}
+        // ref={drop}
+        // style={{ backgroundColor: isOver ? "green" : null }}
       >
         {state.programs.length ? (
-          state.programs.map((program) => <ProgramBar program={program} />)
+          state.programs.map((program, index) => (
+            <ProgramBar program={program} index={index} />
+          ))
         ) : (
           <p>You currently have no programs.</p>
         )}
