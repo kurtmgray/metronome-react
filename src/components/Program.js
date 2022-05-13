@@ -1,20 +1,17 @@
 import React from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import Preset from "./Preset";
+import PresetBox from "./PresetBox";
 import PresetDetails from "./PresetDetails";
 import { useStateContext } from "../ToneContext";
+
 export default function Program() {
   const [state, dispatch] = useStateContext();
-
   return (
     <div>
       <div className="program">
         <input
           className="programTitle"
+          placeholder="Enter program title"
           type="text"
-          // id should be used for styling only
-          // id={state.activeProgramId}
           data-whatever={state.activeProgramId}
           value={
             state.programs.find(
@@ -22,9 +19,29 @@ export default function Program() {
             ).title
           }
           onChange={(e) => {
-            dispatch({ type: "programTitle", value: e.target.value });
+            dispatch({
+              type: "updateProgramTitle",
+              value: e.target.value,
+              id: state.activeProgramId,
+            });
           }}
         />
+        <div className="programDisplay">
+          <div>
+            <h3>Beat</h3>
+            <p>{state.currentBeat}</p>
+          </div>
+          <div>
+            <h3>Measure</h3>
+            <p>
+              {state.currentMeasure} of {state.currentMeasures}
+            </p>
+          </div>
+          <div>
+            <h3>Tempo</h3>
+            <p>{state.currentTempo}</p>
+          </div>
+        </div>
         {state.activeProgramId &&
         state.programs.find((program) => program.id === state.activeProgramId)
           .presets.length > 0 ? (
@@ -32,25 +49,14 @@ export default function Program() {
             {state.programs.map((program) =>
               program.id === state.activeProgramId
                 ? program.presets.map((preset, index) => (
-                    <div>
-                      <Preset
-                        key={preset.id}
-                        preset={preset}
-                        index={index}
-                        // innerRef={provided.innerRef}
-                        // provided={provided}
-                      />
-                    </div>
-                    // }}
-                    // </Draggable>
+                    <PresetBox key={preset.id} preset={preset} index={index} />
                   ))
                 : null
             )}
           </div>
-        ) : //     }}
-        //   </Droppable>
-        // </DragDropContext>
-        null}
+        ) : (
+          "No presets in program."
+        )}
         <div className="programControls">
           {!state.isPlaying ? (
             <button
@@ -76,7 +82,7 @@ export default function Program() {
             onClick={() => {
               dispatch({ type: "createPreset" });
             }}
-            disabled={state.createPresetMode}
+            disabled={state.activePresetId}
           >
             Create Preset
           </button>

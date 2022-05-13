@@ -3,17 +3,24 @@ import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../utils/itemTypes";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../ToneContext";
-
+const style = {
+  border: "1px dashed gray",
+  padding: "0.5rem 1rem",
+  marginBottom: ".5rem",
+  backgroundColor: "white",
+  cursor: "move",
+};
 export default function ProgramBar({ program, index }) {
   const [state, dispatch] = useStateContext();
   const ref = useRef();
-  const [{ isOver }, drop] = useDrop({
+  const [{ isOver, handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
     drop: (item, monitor) => {
       console.log(item);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
+      handlerId: monitor.getHandlerId(),
     }),
     hover: (item, monitor) => {
       if (!ref.current) {
@@ -22,36 +29,23 @@ export default function ProgramBar({ program, index }) {
       console.log("hovering");
       const dragIndex = item.index;
       const hoverIndex = index;
-      // Don't replace items with themselves
       if (dragIndex === hoverIndex) {
         return;
       }
-      // Determine rectangle on screen
       const hoverBoundingRect = ref.current.getBoundingClientRect();
-      // Get vertical middle
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      // Determine mouse position
       const clientOffset = monitor.getClientOffset();
-      // Get pixels to the top
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-      // Dragging downwards
+
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
-      // Dragging upwards
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
-      // Time to actually perform the action
-      state.moveProgramBar(dragIndex, hoverIndex, item.id);
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
+      console.log(item);
+      state.moveProgramBar(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });
@@ -63,29 +57,57 @@ export default function ProgramBar({ program, index }) {
     }),
   });
 
+  const opacity = { opacity: isDragging ? 0 : 1 };
   drag(drop(ref));
 
   return (
-    <div
-      ref={ref}
-      opacity={isDragging ? "0.5" : "1"}
-      className="programBar"
-      id={program.id}
-      key={program.id}
+    <Link
+      style={{ textDecoration: "none" }}
+      to="/program"
+      onClick={(e) => {
+        if (e.target.dataset.id === program.id) {
+          e.preventDefault();
+        }
+      }}
     >
-      <Link to="/program">
-        <p id={program.id} onClick={(e) => state.handleSelectProgram(e)}>
-          {program.title}
-        </p>
-      </Link>
-      <button
-        id={program.id}
+      <div
+        ref={ref}
+        style={opacity}
+        data-handler-id={handlerId} // not certain what this is doing
         onClick={(e) => {
-          dispatch({ type: "deleteProgram", value: e.target.id });
+          if (e.target.dataset.id !== program.id) state.handleSelectProgram(e);
         }}
+        className="programBar"
+        id={program.id}
       >
-        Delete
-      </button>
-    </div>
+        <input
+          data-id={program.id}
+          className=""
+          placeholder="Enter program title"
+          type="text"
+          data-whatever={state.activeProgramId}
+          value={program.title}
+          // onFocus={(e) => state.handleSelectProgram(e)}
+          //   onFocus={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            console.log(program.id);
+            dispatch({
+              type: "updateProgramTitle",
+              value: e.target.value,
+              id: program.id,
+            });
+          }}
+        />
+        <button
+          data-id={program.id}
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch({ type: "deleteProgram", value: e.target.dataset.id });
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </Link>
   );
 }

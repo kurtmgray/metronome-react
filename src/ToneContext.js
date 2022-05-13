@@ -18,6 +18,10 @@ const initialState = {
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
   currentBeat: null,
+  currentMeasure: null,
+  currentMeasures: null,
+  currentTempo: null,
+  currentTimeSig: null,
   mastVol: -15,
   measVol: -15,
   quarVol: -15,
@@ -32,13 +36,13 @@ const initialState = {
   lastClick: null,
   secondToLastClick: null,
   activePresetId: null,
-  activeProgramId: null,
+  activeProgramId: JSON.parse(localStorage.getItem("activeProgramId")) || "",
   changesMade: false,
   programMode: false,
   createPresetMode: false,
   tempPresetValues: {
     id: uuidv4(),
-    title: "Preset title...",
+    title: "",
     tempo: 120,
     iterations: 1,
     timeSignature: 4,
@@ -77,6 +81,8 @@ const reducer = (state, action) => {
       return { ...state, isPlaying: true };
     case "stop":
       return { ...state, isPlaying: false, currentBeat: null };
+    case "resetCurrentBeat":
+      return { ...state, currentBeat: null };
     case "tempo":
       return { ...state, tempo: action.value };
     case "toggleActiveDrawNote":
@@ -483,7 +489,7 @@ const reducer = (state, action) => {
         };
       }
     }
-    case "presetTitle": {
+    case "updatePresetTitle": {
       if (state.activePresetId) {
         return {
           ...state,
@@ -611,7 +617,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         tempPresetValues: {
-          title: "Preset title...",
+          title: "",
           id: uuidv4(),
           tempo: 120,
           iterations: 1,
@@ -635,7 +641,7 @@ const reducer = (state, action) => {
     case "createPreset":
       return { ...state, createPresetMode: !state.createPresetMode };
     case "addProgram":
-      return { ...state, programs: [action.value, ...state.programs] };
+      return { ...state, programs: [...state.programs, action.value] };
     case "revertPresetChanges": {
       return {
         ...state,
@@ -703,11 +709,13 @@ const reducer = (state, action) => {
           ? { ...state, activeProgramId: action.value }
           : { ...state, activeProgramId: undefined };
     }
-    case "programTitle":
+    case "updateProgramTitle":
       return {
         ...state,
         programs: state.programs.map((program) =>
-          program.id === state.activeProgramId
+          program.id ===
+          // state.activeProgramId ||
+          action.id
             ? {
                 ...program,
                 title: action.value,
@@ -778,19 +786,6 @@ const reducer = (state, action) => {
         };
       }
     }
-    case "currentBeat": {
-      if (state.currentBeat >= state.beatsPerMeasure) {
-        console.log("mas");
-        return {
-          ...state,
-          currentBeat: 1,
-        };
-      } else
-        return {
-          ...state,
-          currentBeat: state.currentBeat + 1,
-        };
-    }
     case "bpmTap": {
       const timeNow = new Date().getTime();
       let tempo;
@@ -852,20 +847,101 @@ const reducer = (state, action) => {
         changesMade: false,
       };
     }
-    case "reorderPrograms":
+    case "reorderPrograms": {
+      const program = state.programs[action.dragIndex];
+      const newPrograms = state.programs.filter(
+        (program, idx) => idx !== action.dragIndex
+      );
+      // programs.splice(action.dragIndex, 1);
+      newPrograms.splice(action.hoverIndex, 0, program);
+
       return {
         ...state,
-        programs: action.value,
+        programs: [...newPrograms],
       };
-    case "reorderPresets":
+    }
+    case "reorderPresets": {
+      const program = state.programs.find(
+        (program) => program.id === state.activeProgramId
+      );
+      const preset = program.presets[action.dragIndex];
+      const newPresets = program.presets.filter(
+        (preset, idx) => idx !== action.dragIndex
+      );
+      newPresets.splice(action.hoverIndex, 0, preset);
       return {
         ...state,
         programs: state.programs.map((program) =>
           program.id === state.activeProgramId
-            ? { ...program, presets: action.value }
+            ? { ...program, presets: newPresets }
             : program
         ),
       };
+    }
+    case "updateCurrentBeat": {
+      if (state.isPlaying) {
+        if (!state.programMode) {
+          if (state.currentBeat >= state.beatsPerMeasure) {
+            console.log("mas");
+            return {
+              ...state,
+              currentBeat: 1,
+            };
+          } else
+            return {
+              ...state,
+              currentBeat: state.currentBeat + 1,
+            };
+        } else {
+          if (state.currentBeat >= state.currentTimeSig) {
+            console.log("mas");
+            return {
+              ...state,
+              currentBeat: 1,
+            };
+          } else
+            return {
+              ...state,
+              currentBeat: state.currentBeat + 1,
+            };
+        }
+      } else {
+        return {
+          ...state,
+          currentBeat: null,
+        };
+      }
+    }
+    case "updateProgramDisplay": {
+      if (state.programMode) {
+        return {
+          ...state,
+          currentTempo: action.tempo,
+          currentTimeSig: action.timeSig,
+          currentMeasures: action.measures,
+        };
+      }
+    }
+    case "updateCurrentMeasure": {
+      if (state.isPlaying) {
+        if (state.currentMeasure >= state.currentMeasures) {
+          return {
+            ...state,
+            currentMeasure: 1,
+          };
+        } else {
+          return {
+            ...state,
+            currentMeasure: state.currentMeasure + 1,
+          };
+        }
+      } else {
+        return {
+          ...state,
+          currentMeasure: null,
+        };
+      }
+    }
     default:
       return state;
   }
@@ -887,7 +963,24 @@ export const ToneContext = ({ children }) => {
   // put this in separate component LocalStorageSync
   useEffect(() => {
     localStorage.setItem("programs", JSON.stringify(state.programs));
-  }, [state.programs]);
+    if (state.activeProgramId) {
+      localStorage.setItem(
+        "activeProgramId",
+        JSON.stringify(state.activeProgramId)
+      );
+    }
+  }, [state.programs, state.activeProgramId]);
+
+  // solves issue of time sig lagging 1 render behind
+  useEffect(() => {
+    // Tone.Transport.stop();
+    if (!state.progamMode) {
+      Tone.Transport.lookAhead = 100;
+      Tone.Transport.timeSignature = state.beatsPerMeasure;
+      Tone.Transport.bpm.value = state.tempo;
+    }
+    // Tone.Transport.start();
+  }, [state.beatsPerMeasure, state.tempo]);
 
   useEffect(() => {
     measSound.current = new Tone.Player(state.measUrl).toDestination();
@@ -922,9 +1015,11 @@ export const ToneContext = ({ children }) => {
 
   useEffect(() => {
     Tone.Draw.cancel(0);
+    Tone.Transport.PPQ = 24;
     Tone.Transport.scheduleRepeat((time) => {
-      dispatch({ type: "currentBeat" });
+      dispatch({ type: "updateCurrentBeat" });
     }, "4n");
+
     Tone.Transport.scheduleRepeat((time) => {
       const scheduleDraw = () => {
         Tone.Draw.schedule(() => {
@@ -1077,11 +1172,9 @@ export const ToneContext = ({ children }) => {
   }, [state.isPlaying]);
 
   useEffect(() => {
-    if (state.isPlaying && !state.activeProgramId) {
+    if (state.isPlaying && !state.activeProgramId && !state.programMode) {
       Tone.start();
-      Tone.Transport.timeSignature = state.beatsPerMeasure;
-      Tone.Transport.lookAhead = 100;
-      Tone.Transport.bpm.value = state.tempo;
+
       Tone.Transport.start();
     } else {
       Tone.Transport.stop();
@@ -1110,7 +1203,7 @@ export const ToneContext = ({ children }) => {
       tripLoop.current.start();
       sixtLoop.current.start();
     } else if (measLoop.current.state === "started") {
-      Tone.Transport.timeSignature = state.beatsPerMeasure;
+      // Tone.Transport.timeSignature = state.beatsPerMeasure;
       measSound.current.volume.value = state.measVol;
       quarSound.current.volume.value = state.quarVol;
       eighSound.current.volume.value = state.eighVol;
@@ -1144,9 +1237,9 @@ export const ToneContext = ({ children }) => {
       sixtSound.current.mute = false;
     }
   }, [
-    state.tempo,
+    // state.tempo,
     state.isPlaying,
-    state.beatsPerMeasure,
+    // state.beatsPerMeasure,
     state.programMode,
     state.measVol,
     state.quarVol,
@@ -1177,30 +1270,42 @@ export const ToneContext = ({ children }) => {
     if (state.activeProgramId && state.programMode && state.isPlaying) {
       Tone.start();
 
+      // schedule the beat display increment
+      Tone.Transport.scheduleRepeat((time) => {
+        dispatch({ type: "updateCurrentBeat" });
+      }, "4n");
+      // schedule the measure display increment
+      Tone.Transport.scheduleRepeat((time) => {
+        dispatch({ type: "updateCurrentMeasure" });
+      }, "1m");
+
       const activeProgram = state.programs.find(
         (program) => program.id === state.activeProgramId
       );
-
       let runningTotalIterations = 0;
-
       const startMeasures = activeProgram.presets.map(({ iterations }, i) => {
         let result = runningTotalIterations;
         runningTotalIterations += iterations;
         return i === 0 ? 0 + 0.05 : result;
       });
-      console.log(startMeasures);
 
       Tone.Transport.schedule((time) => {
         Tone.Transport.stop();
+        console.log("stop");
         dispatch({ type: "stop" });
+        dispatch({ type: "resetCurrentBeat" });
       }, runningTotalIterations + "m");
-
-      Tone.Transport.schedule((time) => {
-        console.log("hi");
-      }, "4n");
+      console.log(runningTotalIterations);
 
       activeProgram.presets.map((preset, i) => {
         Tone.Transport.schedule((time) => {
+          console.log(preset);
+          dispatch({
+            type: "updateProgramDisplay",
+            tempo: preset.tempo,
+            timeSig: preset.timeSignature,
+            measures: preset.iterations,
+          });
           Tone.Transport.bpm.value = preset.tempo;
           Tone.Transport.timeSignature = preset.timeSignature;
         }, startMeasures[i] + "m");
@@ -1220,7 +1325,7 @@ export const ToneContext = ({ children }) => {
 
         return Object.keys(preset.sounds).forEach((sound) => {
           let loop = new Tone.Loop((time) => {
-            players.player(sound).start(time + ".2");
+            players.player(sound).start(time);
           }, length(sound)[0]);
           loop.iterations =
             sound === "meas"
@@ -1240,12 +1345,13 @@ export const ToneContext = ({ children }) => {
     state.activeProgramId,
     // state.programs,
     state.programMode,
+    // state.currentBeat,
   ]);
 
   const methods = {
-    handleToggle: () => {
-      Tone.Transport.cancel(0);
-    },
+    // handleToggle: () => {
+    //   Tone.Transport.cancel(0);
+    // },
     handleSelectProgram: (e) => {
       if (state.activeProgramId === e.target.id) {
         console.log("already have this id");
@@ -1259,7 +1365,7 @@ export const ToneContext = ({ children }) => {
     },
     handleCreateProgram: () => {
       const program = {
-        title: "New program...",
+        title: "",
         id: uuidv4(),
         presets: [],
       };
@@ -1276,7 +1382,6 @@ export const ToneContext = ({ children }) => {
       const presIdx = state.programs[progIdx].presets.findIndex(
         (preset) => preset.id === state.activePresetId
       );
-      console.log(state.activePresetId, state.activeProgramId);
       return state.programs[progIdx].presets[presIdx][property];
     },
     getNestedPresetValue: (parent, child) => {
@@ -1288,27 +1393,19 @@ export const ToneContext = ({ children }) => {
       );
       return state.programs[progIdx].presets[presIdx][parent][child];
     },
-    moveProgramBar: (hoverIndex, id) => {
-      const programs = state.programs;
-      const progIndex = programs.findIndex((program) => program.id === id);
-      const program = programs.find((program) => program.id === id);
-      programs.splice(progIndex, 1);
-      programs.splice(hoverIndex, 0, program);
-      dispatch({ type: "reorderPrograms", value: programs });
-      // console.log(programs);
-      // console.log(id);
-      // console.log("drag ", dragIndex);
-      // console.log("hover ", hoverIndex);
+    moveProgramBar: (dragIndex, hoverIndex) => {
+      dispatch({
+        type: "reorderPrograms",
+        dragIndex: dragIndex,
+        hoverIndex: hoverIndex,
+      });
     },
-    movePresetBox: (hoverIndex, id) => {
-      const program = state.programs.find(
-        (program) => program.id === state.activeProgramId
-      );
-      const presIndex = program.presets.findIndex((preset) => preset.id === id);
-      const preset = program.presets.find((preset) => preset.id === id);
-      program.presets.splice(presIndex, 1);
-      program.presets.splice(hoverIndex, 0, preset);
-      dispatch({ type: "reorderPresets", value: program.presets });
+    movePresetBox: (dragIndex, hoverIndex) => {
+      dispatch({
+        type: "reorderPresets",
+        dragIndex: dragIndex,
+        hoverIndex: hoverIndex,
+      });
     },
   };
 

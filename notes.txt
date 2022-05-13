@@ -110,28 +110,22 @@ Things to implement:
     Down the road
         handle mixed meter
 
-TODO TODAY:
+TODO:
 
-	DND for programs AND presets
-	Edit Program
-		DND 
-
-	Beat draw
-
+	SCROLL presets issue
+	
+	Beat draw for programs and/or program display
+	Program Display: 
+		currentBeat goes to 1 (not null) at end of program
+		preset title, current tempo, currennt measure and total preset measures
+		highlight applicable preset box
+		
 	Time Signature fix
 		UPDATE: time sig update lags 1 behind state...
 
-	
-	
-	
-	
-	
-	
 	Add sounds
 
-TODO TOMORROW:
-
-USE MORE HELPER FUNCTIONS... getting indexes, etc.
+	USE MORE HELPER FUNCTIONS... getting indexes, etc.
 
 
 

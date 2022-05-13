@@ -11,13 +11,18 @@ export default function PresetDetails() {
         <input
           className="presetTitle"
           type="text"
+          placeholder="Enter preset title"
+          maxLength="8"
           value={
             state.activePresetId
               ? state.getPresetValue("title")
               : state.tempPresetValues.title
           }
           onChange={(e) =>
-            dispatch({ type: "presetTitle", value: e.target.value })
+            dispatch({
+              type: "updatePresetTitle",
+              value: e.target.value,
+            })
           }
         />
         <div className="tempo">
@@ -359,9 +364,6 @@ export default function PresetDetails() {
           <label htmlFor="measPresetSelect">Measure</label>
         </div>
       </div>
-      <div>
-        <span id="beat">Beat 1</span>
-      </div>
       {/* <div>Master Volume
           <span id="mastVol">{state.mastVol}</span>
           <input 
@@ -380,7 +382,8 @@ export default function PresetDetails() {
           id={state.activeProgramId}
           onClick={() =>
             state.activePresetId
-              ? dispatch({ type: "removeActivePreset" })
+              ? (dispatch({ type: "resetTempPresetValues" }),
+                dispatch({ type: "removeActivePreset" }))
               : dispatch({ type: "addPreset" })
           }
           disabled={!state.activeProgramId}
@@ -401,6 +404,7 @@ export default function PresetDetails() {
             <button
               className="deletePreset"
               onClick={() => {
+                dispatch({ type: "resetTempPresetValues" });
                 dispatch({ type: "deletePreset" });
               }}
             >
@@ -408,7 +412,9 @@ export default function PresetDetails() {
             </button>
           </>
         ) : (
-          <button onClick={state.handleCancelNewPreset}>Cancel</button>
+          <button className="cancel" onClick={state.handleCancelNewPreset}>
+            Cancel
+          </button>
         )}
       </div>
     </div>

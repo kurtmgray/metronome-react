@@ -26,6 +26,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  text-decoration: none;
 }
 
 .navbar-link {
@@ -80,7 +81,8 @@ body {
 .presetContainer {
   display: flex;
   justify-content: center;
-  max-width: 80vw;
+  overflow: auto;
+  max-width: calc(100% - 30px);
   margin: 0.5rem;
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
@@ -91,7 +93,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100px;
+  min-width: 100px;
   height: 100px;
   margin: 0.2rem;
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
@@ -116,6 +118,7 @@ body {
 .tap,
 .saveChanges,
 .revert,
+.cancel,
 .addProgram,
 .deletePreset {
   background-color: #13aa52;
@@ -142,6 +145,7 @@ body {
 }
 
 .stop,
+.cancel,
 .deletePreset {
   background: #ff4742;
   border: 1px solid #ff4742;
@@ -168,7 +172,14 @@ body {
 .saveChanges:hover,
 .revert:hover,
 .addProgram:hover,
-.deletePreset:hover {
+.deletePreset:hover,
+.play:focus,
+.stop:focus,
+.createPreset:focus,
+.saveChanges:focus,
+.revert:focus,
+.addProgram:focus,
+.deletePreset:focus {
   box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }

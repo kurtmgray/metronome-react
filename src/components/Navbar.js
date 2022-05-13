@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../ToneContext";
+import metIcon from "./img/metronome.png";
 export default function Navbar() {
   const [state, dispatch] = useStateContext();
 
@@ -8,9 +9,14 @@ export default function Navbar() {
     <div>
       <div className="navbar">
         <div className="navbar-link">
-          <Link to="/">
-            image placeholder
-            {/* <img src={} alt="navLogo" /> */}
+          <Link
+            to="/"
+            onClick={() => {
+              dispatch({ type: "programMode", value: false });
+              // state.handleToggle();
+            }}
+          >
+            <img src={metIcon} height="100px" alt="navLogo" />
           </Link>
         </div>
         <div className="navbar-links">
@@ -18,25 +24,29 @@ export default function Navbar() {
             className="navbar-link"
             onClick={() => {
               dispatch({ type: "programMode", value: false });
-              state.handleToggle();
+              // state.handleToggle();
             }}
           >
-            <Link to="/">Metronome </Link>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              Metronome{" "}
+            </Link>
           </h3>
           <h3
             className="navbar-link"
             onClick={() => {
               dispatch({ type: "programMode", value: true });
-              state.handleToggle();
+              // state.handleToggle();
             }}
           >
-            <Link to="/programs">Programs </Link>
+            <Link to="/programs" style={{ textDecoration: "none" }}>
+              Programs{" "}
+            </Link>
           </h3>
           <h3
             className="navbar-link"
             onClick={() => {
               dispatch({ type: "programMode", value: true });
-              state.handleToggle();
+              // state.handleToggle();
             }}
           >
             <Link
@@ -44,7 +54,11 @@ export default function Navbar() {
               style={
                 state.activeProgramId
                   ? null
-                  : { pointerEvents: "none", color: "#9999" }
+                  : {
+                      pointerEvents: "none",
+                      color: "#9999",
+                      textDecoration: "none",
+                    }
               }
             >
               Current Program{" "}

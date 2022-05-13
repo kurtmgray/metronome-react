@@ -12,14 +12,10 @@ export default function Program() {
   return (
     <div className="programs">
       <h2>Select a Program</h2>
-      <div
-        className="programBarContainer"
-        // ref={drop}
-        // style={{ backgroundColor: isOver ? "green" : null }}
-      >
+      <div className="programBarContainer">
         {state.programs.length ? (
           state.programs.map((program, index) => (
-            <ProgramBar program={program} index={index} />
+            <ProgramBar key={program.id} program={program} index={index} />
           ))
         ) : (
           <p>You currently have no programs.</p>
