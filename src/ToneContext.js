@@ -762,7 +762,7 @@ const reducer = (state, action) => {
               : program
           ),
           tempPresetValues: {
-            title: "Preset title...",
+            title: "",
             id: uuidv4(),
             tempo: 120,
             iterations: 1,

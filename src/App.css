@@ -15,6 +15,8 @@ body {
 }
 
 .navbar {
+  font-family: "Gloria Hallelujah", cursive;
+  font-size: x-large;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,14 +24,20 @@ body {
   /* padding: 1rem;  */
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .navbar-links {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  text-decoration: none;
 }
 
-.navbar-link {
+.navbar-link,
+.navbar-link:visited {
+  color: black;
   padding: 0.5rem;
   margin: 0.5rem;
 }

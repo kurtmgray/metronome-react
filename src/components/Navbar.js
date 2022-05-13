@@ -13,7 +13,6 @@ export default function Navbar() {
             to="/"
             onClick={() => {
               dispatch({ type: "programMode", value: false });
-              // state.handleToggle();
             }}
           >
             <img src={metIcon} height="100px" alt="navLogo" />
@@ -24,7 +23,6 @@ export default function Navbar() {
             className="navbar-link"
             onClick={() => {
               dispatch({ type: "programMode", value: false });
-              // state.handleToggle();
             }}
           >
             <Link to="/" style={{ textDecoration: "none" }}>
@@ -35,35 +33,23 @@ export default function Navbar() {
             className="navbar-link"
             onClick={() => {
               dispatch({ type: "programMode", value: true });
-              // state.handleToggle();
             }}
           >
             <Link to="/programs" style={{ textDecoration: "none" }}>
               Programs{" "}
             </Link>
           </h3>
-          <h3
-            className="navbar-link"
-            onClick={() => {
-              dispatch({ type: "programMode", value: true });
-              // state.handleToggle();
-            }}
-          >
-            <Link
-              to="/program"
-              style={
-                state.activeProgramId
-                  ? null
-                  : {
-                      pointerEvents: "none",
-                      color: "#9999",
-                      textDecoration: "none",
-                    }
-              }
+
+          {state.activeProgramId ? (
+            <h3
+              className="navbar-link"
+              onClick={() => {
+                dispatch({ type: "programMode", value: true });
+              }}
             >
-              Current Program{" "}
-            </Link>
-          </h3>
+              <Link to="/program">Current Program</Link>
+            </h3>
+          ) : null}
         </div>
       </div>
     </div>
