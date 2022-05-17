@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../utils/itemTypes";
 import { useStateContext } from "../ToneContext";
+import classNames from "classnames";
 const style = {
   border: "1px dashed gray",
   padding: "0.5rem 1rem",
@@ -75,7 +76,9 @@ export default function PresetBox({ preset, index }) {
         opacity: isDragging ? 0 : 1,
       }} // why is this not being applied?
       data-handler-id={handlerId}
-      className="presetBox"
+      className={classNames("presetBox", {
+        currentPreset: state.activePresetDivs[index],
+      })}
       name={preset.id}
       id={preset.id} // should use only for style purposes, will fix
       onClick={() => {

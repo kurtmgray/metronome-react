@@ -113,19 +113,18 @@ Things to implement:
 TODO:
 
 	SCROLL presets issue
-	
-	Beat draw for programs and/or program display
-	Program Display: 
-		currentBeat goes to 1 (not null) at end of program
-		preset title, current tempo, currennt measure and total preset measures
-		highlight applicable preset box
-		
-	Time Signature fix
-		UPDATE: time sig update lags 1 behind state...
 
 	Add sounds
 
 	USE MORE HELPER FUNCTIONS... getting indexes, etc.
+
+	Metronome side styling
+
+	Defaults for sounds
+
+	Draw glitch
+
+	Start glitch/buffer
 
 
 

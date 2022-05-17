@@ -145,7 +145,9 @@ export default function PresetDetails() {
               <option value={sounds.openHihat}>Open Hi-Hat</option>
               <option value={sounds.ride}>Ride Cymbal</option>
               <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves}>Claves</option>
+              <option value={sounds.claves} defaultValue>
+                Claves
+              </option>
               <option value={sounds.tom}>Tom</option>
             </select>
           </div>
@@ -192,7 +194,9 @@ export default function PresetDetails() {
             >
               <option value="">Choose a Sound</option>
               <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap}>Clap</option>
+              <option value={sounds.clap} defaultValue>
+                Clap
+              </option>
               <option value={sounds.hihat}>Hi-Hat</option>
               <option value={sounds.kick}>Kick</option>
               <option value={sounds.openHihat}>Open Hi-Hat</option>
@@ -247,7 +251,9 @@ export default function PresetDetails() {
               <option value={sounds.boom}>Boom</option>
               <option value={sounds.clap}>Clap</option>
               <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick}>Kick</option>
+              <option value={sounds.kick} defaultValue>
+                Kick
+              </option>
               <option value={sounds.openHihat}>Open Hi-Hat</option>
               <option value={sounds.ride}>Ride Cymbal</option>
               <option value={sounds.snare}>Snare</option>
@@ -302,7 +308,9 @@ export default function PresetDetails() {
               <option value={sounds.hihat}>Hi-Hat</option>
               <option value={sounds.kick}>Kick</option>
               <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride}>Ride Cymbal</option>
+              <option value={sounds.ride} defaultValue>
+                Ride Cymbal
+              </option>
               <option value={sounds.snare}>Snare</option>
               <option value={sounds.claves}>Claves</option>
               <option value={sounds.tom}>Tom</option>
@@ -358,7 +366,9 @@ export default function PresetDetails() {
               <option value={sounds.ride}>Ride Cymbal</option>
               <option value={sounds.snare}>Snare</option>
               <option value={sounds.claves}>Claves</option>
-              <option value={sounds.tom}>Tom</option>
+              <option value={sounds.tom} defaultValue>
+                Tom
+              </option>
             </select>
           </div>
           <label htmlFor="measPresetSelect">Measure</label>

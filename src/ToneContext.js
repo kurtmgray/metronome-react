@@ -15,6 +15,7 @@ import { scheduleDraw, length } from "./Utilities";
 const initialState = {
   isPlaying: false,
   activeDrawNotes: {},
+  activePresetDivs: { 0: false },
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
   currentBeat: null,
@@ -79,8 +80,19 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "play":
       return { ...state, isPlaying: true };
-    case "stop":
-      return { ...state, isPlaying: false, currentBeat: null };
+    case "stop": {
+      if (state.programMode) {
+        return {
+          ...state,
+          isPlaying: false,
+          currentBeat: null,
+          currentTempo: null,
+          currentMeasure: null,
+          currentMeasures: null,
+          activePresetDivs: { 0: false },
+        };
+      } else return { ...state, isPlaying: false, currentBeat: null };
+    }
     case "resetCurrentBeat":
       return { ...state, currentBeat: null };
     case "tempo":
@@ -93,6 +105,26 @@ const reducer = (state, action) => {
           [action.value]: !state.activeDrawNotes[action.value],
         },
       };
+    case "toggleActivePresetDivs": {
+      if (action.previous === null) {
+        return {
+          ...state,
+          activePresetDivs: {
+            ...state.activePresetDivs,
+            [action.current]: !state.activePresetDivs[action.current],
+          },
+        };
+      } else {
+        return {
+          ...state,
+          activePresetDivs: {
+            ...state.activePresetDivs,
+            [action.current]: !state.activePresetDivs[action.current],
+            [action.previous]: !state.activePresetDivs[action.previous],
+          },
+        };
+      }
+    }
     case "beatsPerMeasure":
       return { ...state, beatsPerMeasure: action.value };
     case "mastVol":
@@ -882,7 +914,6 @@ const reducer = (state, action) => {
       if (state.isPlaying) {
         if (!state.programMode) {
           if (state.currentBeat >= state.beatsPerMeasure) {
-            console.log("mas");
             return {
               ...state,
               currentBeat: 1,
@@ -894,7 +925,6 @@ const reducer = (state, action) => {
             };
         } else {
           if (state.currentBeat >= state.currentTimeSig) {
-            console.log("mas");
             return {
               ...state,
               currentBeat: 1,
@@ -909,6 +939,7 @@ const reducer = (state, action) => {
         return {
           ...state,
           currentBeat: null,
+          currentTempo: null,
         };
       }
     }
@@ -919,6 +950,8 @@ const reducer = (state, action) => {
           currentTempo: action.tempo,
           currentTimeSig: action.timeSig,
           currentMeasures: action.measures,
+          currentBeat:
+            state.currentBeat > action.prevTimeSig ? 1 : state.currentBeat + 1,
         };
       }
     }
@@ -1013,6 +1046,7 @@ export const ToneContext = ({ children }) => {
     state.beatsPerMeasure,
   ]);
 
+  // schedule draw events for metronome
   useEffect(() => {
     Tone.Draw.cancel(0);
     Tone.Transport.PPQ = 24;
@@ -1021,165 +1055,22 @@ export const ToneContext = ({ children }) => {
     }, "4n");
 
     Tone.Transport.scheduleRepeat((time) => {
-      const scheduleDraw = () => {
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 1 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 1 });
-          }, 100);
-        }, time);
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 2 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 2 });
-          }, 100);
-        }, "+2i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 3 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 3 });
-          }, 100);
-        }, "+4i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 4 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 4 });
-          }, 100);
-        }, "+6i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 5 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 5 });
-          }, 100);
-        }, "+8i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 6 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 6 });
-          }, 100);
-        }, "+10i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 7 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 7 });
-          }, 100);
-        }, "+12i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 8 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 8 });
-          }, 100);
-        }, "+14i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 9 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 9 });
-          }, 100);
-        }, "+16i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 10 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 10 });
-          }, 100);
-        }, "+18i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 11 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 11 });
-          }, 100);
-        }, "+20i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 12 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 12 });
-          }, 100);
-        }, "+22i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 13 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 13 });
-          }, 100);
-        }, "+24i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 12 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 12 });
-          }, 100);
-        }, "+26i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 11 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 11 });
-          }, 100);
-        }, "+28i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 10 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 10 });
-          }, 100);
-        }, "+30i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 9 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 9 });
-          }, 100);
-        }, "+32i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 8 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 8 });
-          }, 100);
-        }, "+34i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 7 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 7 });
-          }, 100);
-        }, "+36i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 6 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 6 });
-          }, 100);
-        }, "+38i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 5 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 5 });
-          }, 100);
-        }, "+40i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 4 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 4 });
-          }, 100);
-        }, "+42i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 3 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 3 });
-          }, 100);
-        }, "+44i");
-        Tone.Draw.schedule(() => {
-          dispatch({ type: "toggleActiveDrawNote", value: 2 });
-          setTimeout(() => {
-            dispatch({ type: "toggleActiveDrawNote", value: 2 });
-          }, 100);
-        }, "+46i");
-      };
-      scheduleDraw();
+      scheduleDraw(dispatch, time);
     }, "2n");
   }, [state.isPlaying]);
 
+  // for metronome
   useEffect(() => {
     if (state.isPlaying && !state.activeProgramId && !state.programMode) {
       Tone.start();
-
       Tone.Transport.start();
-    } else {
+    } else if (
+      !state.isPlaying &&
+      !state.activeProgramId &&
+      !state.programMode
+    ) {
       Tone.Transport.stop();
-      Tone.Transport.cancel(0);
-      // Tone.Draw.cancel(0);
+      Tone.Transport.cancel();
       measLoop.current.stop();
       quarLoop.current.stop();
       eighLoop.current.stop();
@@ -1249,26 +1140,12 @@ export const ToneContext = ({ children }) => {
     state.activeProgramId,
   ]);
 
-  const length = (item) => {
-    switch (item) {
-      case "meas":
-        return ["1m"];
-      case "quar":
-        return ["4n", 1];
-      case "eigh":
-        return ["8n", 2];
-      case "trip":
-        return ["8t", 3];
-      case "sixt":
-        return ["16n", 4];
-      default:
-        return null;
-    }
-  };
-
+  // for program
   useEffect(() => {
     if (state.activeProgramId && state.programMode && state.isPlaying) {
+      Tone.Transport.cancel();
       Tone.start();
+      console.log("test");
 
       // schedule the beat display increment
       Tone.Transport.scheduleRepeat((time) => {
@@ -1278,38 +1155,31 @@ export const ToneContext = ({ children }) => {
       Tone.Transport.scheduleRepeat((time) => {
         dispatch({ type: "updateCurrentMeasure" });
       }, "1m");
+      Tone.Transport.scheduleRepeat((time) => {
+        scheduleDraw(dispatch, time);
+      }, "2n");
 
       const activeProgram = state.programs.find(
         (program) => program.id === state.activeProgramId
       );
-      let runningTotalIterations = 0;
-      const startMeasures = activeProgram.presets.map(({ iterations }, i) => {
-        let result = runningTotalIterations;
-        runningTotalIterations += iterations;
-        return i === 0 ? 0 + 0.05 : result;
-      });
-
+      let runningTotalBeats = 0;
+      const markerBeats = activeProgram.presets.map(
+        ({ iterations, timeSignature }, i) => {
+          let result = runningTotalBeats;
+          runningTotalBeats += iterations * timeSignature;
+          return i === 0 ? 0 + 0.05 : result;
+        }
+      );
+      // schedules a stop and reset of currentBeat after all of the beats in the program
       Tone.Transport.schedule((time) => {
         Tone.Transport.stop();
         console.log("stop");
         dispatch({ type: "stop" });
         dispatch({ type: "resetCurrentBeat" });
-      }, runningTotalIterations + "m");
-      console.log(runningTotalIterations);
+      }, `0:${runningTotalBeats}:0`);
+      console.log(runningTotalBeats);
 
       activeProgram.presets.map((preset, i) => {
-        Tone.Transport.schedule((time) => {
-          console.log(preset);
-          dispatch({
-            type: "updateProgramDisplay",
-            tempo: preset.tempo,
-            timeSig: preset.timeSignature,
-            measures: preset.iterations,
-          });
-          Tone.Transport.bpm.value = preset.tempo;
-          Tone.Transport.timeSignature = preset.timeSignature;
-        }, startMeasures[i] + "m");
-
         const players = new Tone.Players({
           meas: preset.sounds.meas,
           quar: preset.sounds.quar,
@@ -1326,17 +1196,38 @@ export const ToneContext = ({ children }) => {
         return Object.keys(preset.sounds).forEach((sound) => {
           let loop = new Tone.Loop((time) => {
             players.player(sound).start(time);
+            // Tone.Transport.timeSignature = preset.timeSignature;
           }, length(sound)[0]);
           loop.iterations =
             sound === "meas"
               ? preset.iterations
               : preset.iterations * preset.timeSignature * length(sound)[1];
-          loop.start(startMeasures[i] + "m");
+          loop.start(`0:${markerBeats[i]}:0`);
         });
       });
       Tone.Transport.lookahead = 100;
+      activeProgram.presets.map((preset, i) => {
+        Tone.Transport.schedule(() => {
+          Tone.Transport.bpm.value = preset.tempo;
+          Tone.Transport.timeSignature = preset.timeSignature;
+          dispatch({
+            type: "toggleActivePresetDivs",
+            current: i,
+            previous: i === 0 ? null : i - 1,
+          });
+          dispatch({
+            type: "updateProgramDisplay",
+            tempo: preset.tempo,
+            timeSig: preset.timeSignature,
+            measures: preset.iterations,
+            prevTimeSig:
+              i > 0 ? activeProgram.presets[i - 1].timeSignature : null,
+          });
+          // console.log(Tone.Transport);
+        }, `0:${markerBeats[i]}:0`);
+      });
       Tone.Transport.start();
-    } else if (!state.activeProgramId && state.programMode) {
+    } else if (state.activeProgramId && state.programMode && !state.isPlaying) {
       Tone.Transport.cancel(0);
       Tone.Transport.stop();
     }
@@ -1349,9 +1240,6 @@ export const ToneContext = ({ children }) => {
   ]);
 
   const methods = {
-    // handleToggle: () => {
-    //   Tone.Transport.cancel(0);
-    // },
     handleSelectProgram: (e) => {
       if (state.activeProgramId === e.target.id) {
         console.log("already have this id");

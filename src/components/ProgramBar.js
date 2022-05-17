@@ -82,15 +82,12 @@ export default function ProgramBar({ program, index }) {
       >
         <input
           data-id={program.id}
-          className=""
+          className="barText"
           placeholder="Enter program title"
           type="text"
           data-whatever={state.activeProgramId}
           value={program.title}
-          // onFocus={(e) => state.handleSelectProgram(e)}
-          //   onFocus={(e) => e.stopPropagation()}
           onChange={(e) => {
-            console.log(program.id);
             dispatch({
               type: "updateProgramTitle",
               value: e.target.value,
@@ -99,6 +96,7 @@ export default function ProgramBar({ program, index }) {
           }}
         />
         <button
+          className="deleteProgram"
           data-id={program.id}
           onClick={(e) => {
             e.preventDefault();

@@ -10,46 +10,6 @@ export default function Metronome() {
     dispatch({ type: "selectProgram" });
   }, []);
 
-  const drawClass1 = classNames("note", {
-    active: state.activeDrawNotes[1],
-  });
-  const drawClass2 = classNames("note", {
-    active: state.activeDrawNotes[2],
-  });
-  const drawClass3 = classNames("note", {
-    active: state.activeDrawNotes[3],
-  });
-  const drawClass4 = classNames("note", {
-    active: state.activeDrawNotes[4],
-  });
-  const drawClass5 = classNames("note", {
-    active: state.activeDrawNotes[5],
-  });
-  const drawClass6 = classNames("note", {
-    active: state.activeDrawNotes[6],
-  });
-  const drawClass7 = classNames("note", {
-    active: state.activeDrawNotes[7],
-  });
-  const drawClass8 = classNames("note", {
-    active: state.activeDrawNotes[8],
-  });
-  const drawClass9 = classNames("note", {
-    active: state.activeDrawNotes[9],
-  });
-  const drawClass10 = classNames("note", {
-    active: state.activeDrawNotes[10],
-  });
-  const drawClass11 = classNames("note", {
-    active: state.activeDrawNotes[11],
-  });
-  const drawClass12 = classNames("note", {
-    active: state.activeDrawNotes[12],
-  });
-  const drawClass13 = classNames("note", {
-    active: state.activeDrawNotes[13],
-  });
-
   return (
     <>
       <div className="metronome">
@@ -59,19 +19,84 @@ export default function Metronome() {
               <h1>{state.tempo}</h1>
             </div>
             <div id="notes">
-              <div id="" className={drawClass1}></div>
-              <div id="" className={drawClass2}></div>
-              <div id="" className={drawClass3}></div>
-              <div id="" className={drawClass4}></div>
-              <div id="" className={drawClass5}></div>
-              <div id="" className={drawClass6}></div>
-              <div id="" className={drawClass7}></div>
-              <div id="" className={drawClass8}></div>
-              <div id="" className={drawClass9}></div>
-              <div id="" className={drawClass10}></div>
-              <div id="" className={drawClass11}></div>
-              <div id="" className={drawClass12}></div>
-              <div id="" className={drawClass13}></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[1],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[2],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[3],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[4],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[5],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[6],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[7],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[8],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[9],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[10],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[11],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[12],
+                })}
+              ></div>
+              <div
+                id=""
+                className={classNames("note", {
+                  active: state.activeDrawNotes[13],
+                })}
+              ></div>
             </div>
             <div className="beatInfo">
               <div className="beatsPerDisplay">
@@ -143,7 +168,6 @@ export default function Metronome() {
                   disabled={state.isPlaying}
                 >
                   <option value="">Choose a Sound</option>
-                  <option value="">Choose a Sound</option>
                   <option value={sounds.boom}>Boom</option>
                   <option value={sounds.clap}>Clap</option>
                   <option value={sounds.hihat}>Hi-Hat</option>
@@ -151,7 +175,9 @@ export default function Metronome() {
                   <option value={sounds.openHihat}>Open Hi-Hat</option>
                   <option value={sounds.ride}>Ride Cymbal</option>
                   <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves}>Claves</option>
+                  <option value={sounds.claves} defaultValue>
+                    Claves
+                  </option>
                   <option value={sounds.tom}>Tom</option>
                 </select>
               </div>
@@ -184,13 +210,14 @@ export default function Metronome() {
                   disabled={state.isPlaying}
                 >
                   <option value="">Choose a Sound</option>
-                  <option value="">Choose a Sound</option>
                   <option value={sounds.boom}>Boom</option>
                   <option value={sounds.clap}>Clap</option>
                   <option value={sounds.hihat}>Hi-Hat</option>
                   <option value={sounds.kick}>Kick</option>
                   <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride}>Ride Cymbal</option>
+                  <option value={sounds.ride} defaultValue>
+                    Ride Cymbal
+                  </option>
                   <option value={sounds.snare}>Snare</option>
                   <option value={sounds.claves}>Claves</option>
                   <option value={sounds.tom}>Tom</option>
@@ -224,11 +251,12 @@ export default function Metronome() {
                   disabled={state.isPlaying}
                 >
                   <option value="">Choose a Sound</option>
-                  <option value="">Choose a Sound</option>
                   <option value={sounds.boom}>Boom</option>
                   <option value={sounds.clap}>Clap</option>
                   <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick}>Kick</option>
+                  <option value={sounds.kick} defaultValue>
+                    Kick
+                  </option>
                   <option value={sounds.openHihat}>Open Hi-Hat</option>
                   <option value={sounds.ride}>Ride Cymbal</option>
                   <option value={sounds.snare}>Snare</option>
@@ -264,7 +292,6 @@ export default function Metronome() {
                   disabled={state.isPlaying}
                 >
                   <option value="">Choose a Sound</option>
-                  <option value="">Choose a Sound</option>
                   <option value={sounds.boom}>Boom</option>
                   <option value={sounds.clap}>Clap</option>
                   <option value={sounds.hihat}>Hi-Hat</option>
@@ -273,7 +300,9 @@ export default function Metronome() {
                   <option value={sounds.ride}>Ride Cymbal</option>
                   <option value={sounds.snare}>Snare</option>
                   <option value={sounds.claves}>Claves</option>
-                  <option value={sounds.tom}>Tom</option>
+                  <option value={sounds.tom} defaultValue>
+                    Tom
+                  </option>
                 </select>
               </div>
               <label htmlFor="tripSelect">Triplet</label>
@@ -304,8 +333,9 @@ export default function Metronome() {
                   disabled={state.isPlaying}
                 >
                   <option value="">Choose a Sound</option>
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom}>Boom</option>
+                  <option value={sounds.boom} defaultValue>
+                    Boom
+                  </option>
                   <option value={sounds.clap}>Clap</option>
                   <option value={sounds.hihat}>Hi-Hat</option>
                   <option value={sounds.kick}>Kick</option>

@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import PresetBox from "./PresetBox";
 import PresetDetails from "./PresetDetails";
 import { useStateContext } from "../ToneContext";
@@ -8,38 +9,128 @@ export default function Program() {
   return (
     <div>
       <div className="program">
-        <input
-          className="programTitle"
-          placeholder="Enter program title"
-          type="text"
-          data-whatever={state.activeProgramId}
-          value={
-            state.programs.find(
-              (program) => program.id === state.activeProgramId
-            ).title
-          }
-          onChange={(e) => {
-            dispatch({
-              type: "updateProgramTitle",
-              value: e.target.value,
-              id: state.activeProgramId,
-            });
-          }}
-        />
-        <div className="programDisplay">
-          <div>
-            <h3>Beat</h3>
-            <p>{state.currentBeat}</p>
+        <div className="programHead">
+          <input
+            className="programTitle"
+            placeholder="Enter program title"
+            type="text"
+            data-whatever={state.activeProgramId}
+            value={
+              state.programs.find(
+                (program) => program.id === state.activeProgramId
+              ).title
+            }
+            onChange={(e) => {
+              dispatch({
+                type: "updateProgramTitle",
+                value: e.target.value,
+                id: state.activeProgramId,
+              });
+            }}
+          />
+          <div className="notes">
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[1],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[2],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[3],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[4],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[5],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[6],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[7],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[8],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[9],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[10],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[11],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[12],
+              })}
+            ></div>
+            <div
+              id=""
+              className={classNames("note", {
+                active: state.activeDrawNotes[13],
+              })}
+            ></div>
           </div>
-          <div>
-            <h3>Measure</h3>
-            <p>
-              {state.currentMeasure} of {state.currentMeasures}
-            </p>
-          </div>
-          <div>
-            <h3>Tempo</h3>
-            <p>{state.currentTempo}</p>
+          <div className="programDisplay">
+            <div className="displayElement">
+              {state.currentMeasure ? (
+                <span className="programDisplayNumber">
+                  {state.currentMeasure} / {state.currentMeasures}
+                </span>
+              ) : (
+                <span className="programDisplayNumber">0</span>
+              )}
+              <h3>Bar</h3>
+            </div>
+            <div className="displayElement">
+              <span className="programDisplayNumber">
+                {state.currentBeat || "0"}
+              </span>
+              <h3>Beat</h3>
+            </div>
+            <div className="displayElement">
+              <span className="programDisplayNumber">
+                {state.currentTempo || "0"}
+              </span>
+              <h3>BPM</h3>
+            </div>
           </div>
         </div>
         {state.activeProgramId &&
@@ -87,20 +178,6 @@ export default function Program() {
             Create Preset
           </button>
         </div>
-
-        {/* <button onClick={() => dispatch({ type: "programMode" })}>
-        Return to Metronome
-      </button> */}
-        {/* <button
-        id={state.activeProgramId}
-        className="play"
-        onClick={() => {
-          dispatch({ type: "selectProgram" });
-          state.handleCancelNewPreset();
-        }}
-      >
-        View Programs
-      </button> */}
         {(state.createPresetMode || state.activePresetId) && <PresetDetails />}
       </div>
       <pre>

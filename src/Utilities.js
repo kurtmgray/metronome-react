@@ -1,6 +1,8 @@
 import * as Tone from "tone";
+import React from "react";
 
-export const scheduleDraw = () => {
+// for loop for all of these.
+export const scheduleDraw = (dispatch, time) => {
   Tone.Draw.schedule(() => {
     dispatch({ type: "toggleActiveDrawNote", value: 1 });
     setTimeout(() => {
