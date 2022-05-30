@@ -122,9 +122,12 @@ TODO:
 
 	Defaults for sounds
 
-	Draw glitch
-
 	Start glitch/buffer
+	Program Beat Counter is messed up again, as are the preset highlights
+
+
+	fix sound hosting - using S3 bucket, not sure why it wasnt working locally
+
 
 
 

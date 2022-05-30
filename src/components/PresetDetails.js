@@ -1,6 +1,6 @@
 import React from "react";
 import { useStateContext } from "../ToneContext";
-import sounds from "../Sounds";
+import sounds from "./Sounds";
 
 export default function PresetDetails() {
   const [state, dispatch] = useStateContext();
@@ -128,7 +128,7 @@ export default function PresetDetails() {
             <select
               name="sixtPresetSelect"
               id="sixtPresetSelect"
-              value={
+              defaultValue={
                 state.activePresetId
                   ? state.getNestedPresetValue("sounds", "sixt")
                   : state.tempPresetValues.sounds.sixt
@@ -138,17 +138,37 @@ export default function PresetDetails() {
               }
             >
               <option value="">Choose a Sound</option>
-              <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap}>Clap</option>
-              <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick}>Kick</option>
-              <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride}>Ride Cymbal</option>
-              <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves} defaultValue>
-                Claves
-              </option>
-              <option value={sounds.tom}>Tom</option>
+              <optgroup label="DigiMet">
+                <option value={sounds.digital.down}>Down</option>
+                <option value={sounds.digital.up}>Up</option>
+                <option value={sounds.digital.tap}>Tap</option>
+              </optgroup>
+              <optgroup label="Drum Kit">
+                <option value={sounds.drumkit.boom}>Boom</option>
+                <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                <option value={sounds.drumkit.kick}>Kick</option>
+                <option value={sounds.drumkit.openHihat}>Open Hi-Hat</option>
+                <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                <option value={sounds.drumkit.snare}>Snare</option>
+                <option value={sounds.drumkit.tom}>Tom</option>
+              </optgroup>
+              <optgroup label="Electro Drum">
+                <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                <option value={sounds.electrodrum.eKick}>Kick</option>
+                <option value={sounds.electrodrum.eSnare}>Snare</option>
+              </optgroup>
+              <optgroup label="Tabla">
+                <option value={sounds.tabla.dha}>Dha</option>
+                <option value={sounds.tabla.dhin}>Dhin</option>
+                <option value={sounds.tabla.tin}>Tin</option>
+              </optgroup>
+              <optgroup label="Yamaha">
+                <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                <option value={sounds.yamaha.yKick}>Kick</option>
+                <option value={sounds.yamaha.yRide}>Ride</option>
+                <option value={sounds.yamaha.yRim}>Rim</option>
+                <option value={sounds.yamaha.yShaker}>Shaker</option>
+              </optgroup>
             </select>
           </div>
           <label htmlFor="sixtPresetSelect">Sixteenth</label>
@@ -183,7 +203,7 @@ export default function PresetDetails() {
             <select
               name="eighPresetSelect"
               id="eighPresetSelect"
-              value={
+              defaultValue={
                 state.activePresetId
                   ? state.getNestedPresetValue("sounds", "eigh")
                   : state.tempPresetValues.sounds.eigh
@@ -193,17 +213,37 @@ export default function PresetDetails() {
               }
             >
               <option value="">Choose a Sound</option>
-              <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap} defaultValue>
-                Clap
-              </option>
-              <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick}>Kick</option>
-              <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride}>Ride Cymbal</option>
-              <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves}>Claves</option>
-              <option value={sounds.tom}>Tom</option>
+              <optgroup label="DigiMet">
+                <option value={sounds.digital.down}>Down</option>
+                <option value={sounds.digital.up}>Up</option>
+                <option value={sounds.digital.tap}>Tap</option>
+              </optgroup>
+              <optgroup label="Drum Kit">
+                <option value={sounds.drumkit.boom}>Boom</option>
+                <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                <option value={sounds.drumkit.kick}>Kick</option>
+                <option value={sounds.drumkit.openHihat}>Open Hi-Hat</option>
+                <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                <option value={sounds.drumkit.snare}>Snare</option>
+                <option value={sounds.drumkit.tom}>Tom</option>
+              </optgroup>
+              <optgroup label="Electro Drum">
+                <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                <option value={sounds.electrodrum.eKick}>Kick</option>
+                <option value={sounds.electrodrum.eSnare}>Snare</option>
+              </optgroup>
+              <optgroup label="Tabla">
+                <option value={sounds.tabla.dha}>Dha</option>
+                <option value={sounds.tabla.dhin}>Dhin</option>
+                <option value={sounds.tabla.tin}>Tin</option>
+              </optgroup>
+              <optgroup label="Yamaha">
+                <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                <option value={sounds.yamaha.yKick}>Kick</option>
+                <option value={sounds.yamaha.yRide}>Ride</option>
+                <option value={sounds.yamaha.yRim}>Rim</option>
+                <option value={sounds.yamaha.yShaker}>Shaker</option>
+              </optgroup>
             </select>
           </div>
           <label htmlFor="eighPresetSelect">Eighth</label>
@@ -238,7 +278,7 @@ export default function PresetDetails() {
             <select
               name="quarPresetSelect"
               id="quarPresetSelect"
-              value={
+              defaultValue={
                 state.activePresetId
                   ? state.getNestedPresetValue("sounds", "quar")
                   : state.tempPresetValues.sounds.quar
@@ -248,17 +288,37 @@ export default function PresetDetails() {
               }
             >
               <option value="">Choose a Sound</option>
-              <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap}>Clap</option>
-              <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick} defaultValue>
-                Kick
-              </option>
-              <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride}>Ride Cymbal</option>
-              <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves}>Claves</option>
-              <option value={sounds.tom}>Tom</option>
+              <optgroup label="DigiMet">
+                <option value={sounds.digital.down}>Down</option>
+                <option value={sounds.digital.up}>Up</option>
+                <option value={sounds.digital.tap}>Tap</option>
+              </optgroup>
+              <optgroup label="Drum Kit">
+                <option value={sounds.drumkit.boom}>Boom</option>
+                <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                <option value={sounds.drumkit.kick}>Kick</option>
+                <option value={sounds.drumkit.openHihat}>Open Hi-Hat</option>
+                <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                <option value={sounds.drumkit.snare}>Snare</option>
+                <option value={sounds.drumkit.tom}>Tom</option>
+              </optgroup>
+              <optgroup label="Electro Drum">
+                <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                <option value={sounds.electrodrum.eKick}>Kick</option>
+                <option value={sounds.electrodrum.eSnare}>Snare</option>
+              </optgroup>
+              <optgroup label="Tabla">
+                <option value={sounds.tabla.dha}>Dha</option>
+                <option value={sounds.tabla.dhin}>Dhin</option>
+                <option value={sounds.tabla.tin}>Tin</option>
+              </optgroup>
+              <optgroup label="Yamaha">
+                <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                <option value={sounds.yamaha.yKick}>Kick</option>
+                <option value={sounds.yamaha.yRide}>Ride</option>
+                <option value={sounds.yamaha.yRim}>Rim</option>
+                <option value={sounds.yamaha.yShaker}>Shaker</option>
+              </optgroup>
             </select>
           </div>
           <label htmlFor="quarPresetSelect">Quarter</label>
@@ -293,7 +353,7 @@ export default function PresetDetails() {
             <select
               name="tripPresetSelect"
               id="tripPresetSelect"
-              value={
+              defaultValue={
                 state.activePresetId
                   ? state.getNestedPresetValue("sounds", "trip")
                   : state.tempPresetValues.sounds.trip
@@ -303,17 +363,37 @@ export default function PresetDetails() {
               }
             >
               <option value="">Choose a Sound</option>
-              <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap}>Clap</option>
-              <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick}>Kick</option>
-              <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride} defaultValue>
-                Ride Cymbal
-              </option>
-              <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves}>Claves</option>
-              <option value={sounds.tom}>Tom</option>
+              <optgroup label="DigiMet">
+                <option value={sounds.digital.down}>Down</option>
+                <option value={sounds.digital.up}>Up</option>
+                <option value={sounds.digital.tap}>Tap</option>
+              </optgroup>
+              <optgroup label="Drum Kit">
+                <option value={sounds.drumkit.boom}>Boom</option>
+                <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                <option value={sounds.drumkit.kick}>Kick</option>
+                <option value={sounds.drumkit.openHihat}>Open Hi-Hat</option>
+                <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                <option value={sounds.drumkit.snare}>Snare</option>
+                <option value={sounds.drumkit.tom}>Tom</option>
+              </optgroup>
+              <optgroup label="Electro Drum">
+                <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                <option value={sounds.electrodrum.eKick}>Kick</option>
+                <option value={sounds.electrodrum.eSnare}>Snare</option>
+              </optgroup>
+              <optgroup label="Tabla">
+                <option value={sounds.tabla.dha}>Dha</option>
+                <option value={sounds.tabla.dhin}>Dhin</option>
+                <option value={sounds.tabla.tin}>Tin</option>
+              </optgroup>
+              <optgroup label="Yamaha">
+                <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                <option value={sounds.yamaha.yKick}>Kick</option>
+                <option value={sounds.yamaha.yRide}>Ride</option>
+                <option value={sounds.yamaha.yRim}>Rim</option>
+                <option value={sounds.yamaha.yShaker}>Shaker</option>
+              </optgroup>
             </select>
           </div>
           <label htmlFor="tripPresetSelect">Triplet</label>
@@ -348,7 +428,7 @@ export default function PresetDetails() {
             <select
               name="measPresetSelect"
               id="measPresetSelect"
-              value={
+              defaultValue={
                 state.activePresetId
                   ? state.getNestedPresetValue("sounds", "meas")
                   : state.tempPresetValues.sounds.meas
@@ -358,17 +438,37 @@ export default function PresetDetails() {
               }
             >
               <option value="">Choose a Sound</option>
-              <option value={sounds.boom}>Boom</option>
-              <option value={sounds.clap}>Clap</option>
-              <option value={sounds.hihat}>Hi-Hat</option>
-              <option value={sounds.kick}>Kick</option>
-              <option value={sounds.openHihat}>Open Hi-Hat</option>
-              <option value={sounds.ride}>Ride Cymbal</option>
-              <option value={sounds.snare}>Snare</option>
-              <option value={sounds.claves}>Claves</option>
-              <option value={sounds.tom} defaultValue>
-                Tom
-              </option>
+              <optgroup label="DigiMet">
+                <option value={sounds.digital.down}>Down</option>
+                <option value={sounds.digital.up}>Up</option>
+                <option value={sounds.digital.tap}>Tap</option>
+              </optgroup>
+              <optgroup label="Drum Kit">
+                <option value={sounds.drumkit.boom}>Boom</option>
+                <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                <option value={sounds.drumkit.kick}>Kick</option>
+                <option value={sounds.drumkit.openHihat}>Open Hi-Hat</option>
+                <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                <option value={sounds.drumkit.snare}>Snare</option>
+                <option value={sounds.drumkit.tom}>Tom</option>
+              </optgroup>
+              <optgroup label="Electro Drum">
+                <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                <option value={sounds.electrodrum.eKick}>Kick</option>
+                <option value={sounds.electrodrum.eSnare}>Snare</option>
+              </optgroup>
+              <optgroup label="Tabla">
+                <option value={sounds.tabla.dha}>Dha</option>
+                <option value={sounds.tabla.dhin}>Dhin</option>
+                <option value={sounds.tabla.tin}>Tin</option>
+              </optgroup>
+              <optgroup label="Yamaha">
+                <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                <option value={sounds.yamaha.yKick}>Kick</option>
+                <option value={sounds.yamaha.yRide}>Ride</option>
+                <option value={sounds.yamaha.yRim}>Rim</option>
+                <option value={sounds.yamaha.yShaker}>Shaker</option>
+              </optgroup>
             </select>
           </div>
           <label htmlFor="measPresetSelect">Measure</label>

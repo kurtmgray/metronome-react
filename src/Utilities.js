@@ -1,152 +1,154 @@
 import * as Tone from "tone";
 import React from "react";
 
-// for loop for all of these.
-export const scheduleDraw = (dispatch, time) => {
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 1 });
-    setTimeout(() => {
+export const scheduleDraw = (dispatch, time, startLeft) => {
+  if (!startLeft.current) {
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 1 });
-    }, 100);
-  }, time);
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 2 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 1 });
+      }, 100);
+    }, time);
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 2 });
-    }, 100);
-  }, "+2i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 3 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 2 });
+      }, 100);
+    }, "+2i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 3 });
-    }, 100);
-  }, "+4i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 4 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 3 });
+      }, 100);
+    }, "+4i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 4 });
-    }, 100);
-  }, "+6i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 5 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 4 });
+      }, 100);
+    }, "+6i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 5 });
-    }, 100);
-  }, "+8i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 6 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 5 });
+      }, 100);
+    }, "+8i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 6 });
-    }, 100);
-  }, "+10i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 7 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 6 });
+      }, 100);
+    }, "+10i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 7 });
-    }, 100);
-  }, "+12i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 8 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 7 });
+      }, 100);
+    }, "+12i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 8 });
-    }, 100);
-  }, "+14i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 9 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 8 });
+      }, 100);
+    }, "+14i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 9 });
-    }, 100);
-  }, "+16i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 10 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 9 });
+      }, 100);
+    }, "+16i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 10 });
-    }, 100);
-  }, "+18i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 11 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 10 });
+      }, 100);
+    }, "+18i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 11 });
-    }, 100);
-  }, "+20i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 12 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 11 });
+      }, 100);
+    }, "+20i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 12 });
-    }, 100);
-  }, "+22i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 13 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 12 });
+      }, 100);
+    }, "+22i");
+  } else {
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 13 });
-    }, 100);
-  }, "+24i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 12 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 13 });
+      }, 100);
+    }, time);
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 12 });
-    }, 100);
-  }, "+26i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 11 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 12 });
+      }, 100);
+    }, "+2i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 11 });
-    }, 100);
-  }, "+28i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 10 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 11 });
+      }, 100);
+    }, "+4i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 10 });
-    }, 100);
-  }, "+30i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 9 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 10 });
+      }, 100);
+    }, "+6i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 9 });
-    }, 100);
-  }, "+32i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 8 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 9 });
+      }, 100);
+    }, "+8i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 8 });
-    }, 100);
-  }, "+34i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 7 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 8 });
+      }, 100);
+    }, "+10i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 7 });
-    }, 100);
-  }, "+36i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 6 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 7 });
+      }, 100);
+    }, "+12i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 6 });
-    }, 100);
-  }, "+38i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 5 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 6 });
+      }, 100);
+    }, "+14i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 5 });
-    }, 100);
-  }, "+40i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 4 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 5 });
+      }, 100);
+    }, "+16i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 4 });
-    }, 100);
-  }, "+42i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 3 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 4 });
+      }, 100);
+    }, "+18i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 3 });
-    }, 100);
-  }, "+44i");
-  Tone.Draw.schedule(() => {
-    dispatch({ type: "toggleActiveDrawNote", value: 2 });
-    setTimeout(() => {
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 3 });
+      }, 100);
+    }, "+20i");
+    Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 2 });
-    }, 100);
-  }, "+46i");
+      setTimeout(() => {
+        dispatch({ type: "toggleActiveDrawNote", value: 2 });
+      }, 100);
+    }, "+22i");
+  }
 };
 
 export const determineTime = (i) => {

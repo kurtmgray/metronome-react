@@ -8,7 +8,7 @@ import React, {
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import * as Tone from "tone";
-import sounds from "./Sounds";
+import sounds from "./components/Sounds";
 import { v4 as uuidv4 } from "uuid";
 import { scheduleDraw, length } from "./Utilities";
 
@@ -16,6 +16,7 @@ const initialState = {
   isPlaying: false,
   activeDrawNotes: {},
   activePresetDivs: { 0: false },
+  startLeft: false,
   tempo: Tone.Transport.bpm.value,
   beatsPerMeasure: 4,
   currentBeat: null,
@@ -29,11 +30,11 @@ const initialState = {
   eighVol: -15,
   tripVol: -15,
   sixtVol: -15,
-  measUrl: sounds.boom,
-  quarUrl: sounds.kick,
-  eighUrl: sounds.ride,
-  tripUrl: sounds.hihat,
-  sixtUrl: sounds.claves,
+  measUrl: sounds.yamaha.yCowbell,
+  quarUrl: sounds.yamaha.yKick,
+  eighUrl: sounds.yamaha.yRide,
+  tripUrl: sounds.yamaha.yRim,
+  sixtUrl: sounds.yamaha.yShaker,
   lastClick: null,
   secondToLastClick: null,
   activePresetId: null,
@@ -48,11 +49,11 @@ const initialState = {
     iterations: 1,
     timeSignature: 4,
     sounds: {
-      meas: "",
-      quar: "",
-      eigh: "",
-      trip: "",
-      sixt: "",
+      meas: sounds.yamaha.yCowbell,
+      quar: sounds.yamaha.yKick,
+      eigh: sounds.yamaha.yRide,
+      trip: sounds.yamaha.yRim,
+      sixt: sounds.yamaha.yShaker,
     },
     volume: {
       meas: -15,
@@ -655,11 +656,11 @@ const reducer = (state, action) => {
           iterations: 1,
           timeSignature: 4,
           sounds: {
-            meas: "",
-            quar: "",
-            eigh: "",
-            trip: "",
-            sixt: "",
+            meas: sounds.yamaha.yCowbell,
+            quar: sounds.yamaha.yKick,
+            eigh: sounds.yamaha.yRide,
+            trip: sounds.yamaha.yRim,
+            sixt: sounds.yamaha.yShaker,
           },
           volume: {
             meas: -15,
@@ -800,11 +801,11 @@ const reducer = (state, action) => {
             iterations: 1,
             timeSignature: 4,
             sounds: {
-              meas: "",
-              quar: "",
-              eigh: "",
-              trip: "",
-              sixt: "",
+              meas: sounds.yamaha.yCowbell,
+              quar: sounds.yamaha.yKick,
+              eigh: sounds.yamaha.yRide,
+              trip: sounds.yamaha.yRim,
+              sixt: sounds.yamaha.yShaker,
             },
             volume: {
               meas: -15,
@@ -925,6 +926,7 @@ const reducer = (state, action) => {
             };
         } else {
           if (state.currentBeat >= state.currentTimeSig) {
+            console.log(">=");
             return {
               ...state,
               currentBeat: 1,
@@ -951,7 +953,11 @@ const reducer = (state, action) => {
           currentTimeSig: action.timeSig,
           currentMeasures: action.measures,
           currentBeat:
-            state.currentBeat > action.prevTimeSig ? 1 : state.currentBeat + 1,
+            action.timeSig < action.prevTimeSig
+              ? state.currentBeat > action.prevTimeSig
+                ? 1
+                : state.currentBeat + 1
+              : state.currentBeat + 1,
         };
       }
     }
@@ -1006,13 +1012,11 @@ export const ToneContext = ({ children }) => {
 
   // solves issue of time sig lagging 1 render behind
   useEffect(() => {
-    // Tone.Transport.stop();
     if (!state.progamMode) {
       Tone.Transport.lookAhead = 100;
       Tone.Transport.timeSignature = state.beatsPerMeasure;
       Tone.Transport.bpm.value = state.tempo;
     }
-    // Tone.Transport.start();
   }, [state.beatsPerMeasure, state.tempo]);
 
   useEffect(() => {
@@ -1047,17 +1051,15 @@ export const ToneContext = ({ children }) => {
   ]);
 
   // schedule draw events for metronome
-  useEffect(() => {
-    Tone.Draw.cancel(0);
-    Tone.Transport.PPQ = 24;
-    Tone.Transport.scheduleRepeat((time) => {
-      dispatch({ type: "updateCurrentBeat" });
-    }, "4n");
-
-    Tone.Transport.scheduleRepeat((time) => {
-      scheduleDraw(dispatch, time);
-    }, "2n");
-  }, [state.isPlaying]);
+  // useEffect(() => {
+  //   Tone.Draw.cancel(0);
+  //   Tone.Transport.PPQ = 24;
+  //   Tone.Transport.scheduleRepeat((time) => {
+  //     // dispatch({ type: "updateCurrentBeat" });
+  //     dispatch({ type: "toggleStartLeft" });
+  //     scheduleDraw(dispatch, time, state); // scheduled, so don't have access to changing state.
+  //   }, "4n");
+  // }, [state.isPlaying]);
 
   // for metronome
   useEffect(() => {
@@ -1141,24 +1143,29 @@ export const ToneContext = ({ children }) => {
   ]);
 
   // for program
+  const startLeft = useRef(false);
   useEffect(() => {
     if (state.activeProgramId && state.programMode && state.isPlaying) {
-      Tone.Transport.cancel();
       Tone.start();
+      Tone.Transport.cancel();
+      Tone.Transport.lookahead = 100;
+      Tone.Draw.cancel();
       console.log("test");
 
-      // schedule the beat display increment
+      //schedule the beat display increment
       Tone.Transport.scheduleRepeat((time) => {
         dispatch({ type: "updateCurrentBeat" });
+        startLeft.current = !startLeft.current;
+        scheduleDraw(dispatch, time, startLeft);
       }, "4n");
       // schedule the measure display increment
       Tone.Transport.scheduleRepeat((time) => {
         dispatch({ type: "updateCurrentMeasure" });
       }, "1m");
-      Tone.Transport.scheduleRepeat((time) => {
-        scheduleDraw(dispatch, time);
-      }, "2n");
+      // schedule the beat cursor
+      Tone.Transport.scheduleRepeat((time) => {}, "2n");
 
+      // calculate beats in the programming for scheduling start of presets
       const activeProgram = state.programs.find(
         (program) => program.id === state.activeProgramId
       );
@@ -1170,6 +1177,7 @@ export const ToneContext = ({ children }) => {
           return i === 0 ? 0 + 0.05 : result;
         }
       );
+
       // schedules a stop and reset of currentBeat after all of the beats in the program
       Tone.Transport.schedule((time) => {
         Tone.Transport.stop();
@@ -1179,6 +1187,8 @@ export const ToneContext = ({ children }) => {
       }, `0:${runningTotalBeats}:0`);
       console.log(runningTotalBeats);
 
+      // attaches sound URLs to Players, sets volume based on presets
+      // schedules loop iterations and start beats
       activeProgram.presets.map((preset, i) => {
         const players = new Tone.Players({
           meas: preset.sounds.meas,
@@ -1193,6 +1203,26 @@ export const ToneContext = ({ children }) => {
         players.player("trip").volume.value = preset.volume.trip;
         players.player("sixt").volume.value = preset.volume.sixt;
 
+        Tone.Transport.schedule(() => {
+          // Tone.Draw.cancel();
+          Tone.Transport.bpm.value = preset.tempo;
+          Tone.Transport.timeSignature = preset.timeSignature;
+          dispatch({
+            type: "toggleActivePresetDivs",
+            current: i,
+            previous: i === 0 ? null : i - 1,
+          });
+          const prevTimeSig =
+            i > 0 ? activeProgram.presets[i - 1].timeSignature : null;
+          dispatch({
+            type: "updateProgramDisplay",
+            tempo: preset.tempo,
+            timeSig: preset.timeSignature,
+            measures: preset.iterations,
+            prevTimeSig: prevTimeSig,
+          });
+        }, `0:${markerBeats[i]}:0`);
+
         return Object.keys(preset.sounds).forEach((sound) => {
           let loop = new Tone.Loop((time) => {
             players.player(sound).start(time);
@@ -1205,27 +1235,7 @@ export const ToneContext = ({ children }) => {
           loop.start(`0:${markerBeats[i]}:0`);
         });
       });
-      Tone.Transport.lookahead = 100;
-      activeProgram.presets.map((preset, i) => {
-        Tone.Transport.schedule(() => {
-          Tone.Transport.bpm.value = preset.tempo;
-          Tone.Transport.timeSignature = preset.timeSignature;
-          dispatch({
-            type: "toggleActivePresetDivs",
-            current: i,
-            previous: i === 0 ? null : i - 1,
-          });
-          dispatch({
-            type: "updateProgramDisplay",
-            tempo: preset.tempo,
-            timeSig: preset.timeSignature,
-            measures: preset.iterations,
-            prevTimeSig:
-              i > 0 ? activeProgram.presets[i - 1].timeSignature : null,
-          });
-          // console.log(Tone.Transport);
-        }, `0:${markerBeats[i]}:0`);
-      });
+      // activeProgram.presets.map((preset, i) => {});
       Tone.Transport.start();
     } else if (state.activeProgramId && state.programMode && !state.isPlaying) {
       Tone.Transport.cancel(0);
@@ -1234,9 +1244,8 @@ export const ToneContext = ({ children }) => {
   }, [
     state.isPlaying,
     state.activeProgramId,
-    // state.programs,
+    state.programs,
     state.programMode,
-    // state.currentBeat,
   ]);
 
   const methods = {

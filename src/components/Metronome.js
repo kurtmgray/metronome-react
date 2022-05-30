@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useStateContext } from "../ToneContext";
 import classNames from "classnames";
-import sounds from "../Sounds";
+import sounds from "./Sounds";
 
 export default function Metronome() {
   const [state, dispatch] = useStateContext();
@@ -167,18 +167,40 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom}>Boom</option>
-                  <option value={sounds.clap}>Clap</option>
-                  <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick}>Kick</option>
-                  <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride}>Ride Cymbal</option>
-                  <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves} defaultValue>
-                    Claves
-                  </option>
-                  <option value={sounds.tom}>Tom</option>
+                  <option>Choose a Sound</option>
+                  <optgroup label="DigiMet">
+                    <option value={sounds.digital.down}>Down</option>
+                    <option value={sounds.digital.up}>Up</option>
+                    <option value={sounds.digital.tap}>Tap</option>
+                  </optgroup>
+                  <optgroup label="Drum Kit">
+                    <option value={sounds.drumkit.boom}>Boom</option>
+                    <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                    <option value={sounds.drumkit.kick}>Kick</option>
+                    <option value={sounds.drumkit.openHihat}>
+                      Open Hi-Hat
+                    </option>
+                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.snare}>Snare</option>
+                    <option value={sounds.drumkit.tom}>Tom</option>
+                  </optgroup>
+                  <optgroup label="Electro Drum">
+                    <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                    <option value={sounds.electrodrum.eKick}>Kick</option>
+                    <option value={sounds.electrodrum.eSnare}>Snare</option>
+                  </optgroup>
+                  <optgroup label="Tabla">
+                    <option value={sounds.tabla.dha}>Dha</option>
+                    <option value={sounds.tabla.dhin}>Dhin</option>
+                    <option value={sounds.tabla.tin}>Tin</option>
+                  </optgroup>
+                  <optgroup label="Yamaha">
+                    <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                    <option value={sounds.yamaha.yKick}>Kick</option>
+                    <option value={sounds.yamaha.yRide}>Ride</option>
+                    <option value={sounds.yamaha.yRim}>Rim</option>
+                    <option value={sounds.yamaha.yShaker}>Shaker</option>
+                  </optgroup>
                 </select>
               </div>
               <label htmlFor="sixtSelect">16th</label>
@@ -209,18 +231,40 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom}>Boom</option>
-                  <option value={sounds.clap}>Clap</option>
-                  <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick}>Kick</option>
-                  <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride} defaultValue>
-                    Ride Cymbal
-                  </option>
-                  <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves}>Claves</option>
-                  <option value={sounds.tom}>Tom</option>
+                  <option>Choose a Sound</option>
+                  <optgroup label="DigiMet">
+                    <option value={sounds.digital.down}>Down</option>
+                    <option value={sounds.digital.up}>Up</option>
+                    <option value={sounds.digital.tap}>Tap</option>
+                  </optgroup>
+                  <optgroup label="Drum Kit">
+                    <option value={sounds.drumkit.boom}>Boom</option>
+                    <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                    <option value={sounds.drumkit.kick}>Kick</option>
+                    <option value={sounds.drumkit.openHihat}>
+                      Open Hi-Hat
+                    </option>
+                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.snare}>Snare</option>
+                    <option value={sounds.drumkit.tom}>Tom</option>
+                  </optgroup>
+                  <optgroup label="Electro Drum">
+                    <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                    <option value={sounds.electrodrum.eKick}>Kick</option>
+                    <option value={sounds.electrodrum.eSnare}>Snare</option>
+                  </optgroup>
+                  <optgroup label="Tabla">
+                    <option value={sounds.tabla.dha}>Dha</option>
+                    <option value={sounds.tabla.dhin}>Dhin</option>
+                    <option value={sounds.tabla.tin}>Tin</option>
+                  </optgroup>
+                  <optgroup label="Yamaha">
+                    <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                    <option value={sounds.yamaha.yKick}>Kick</option>
+                    <option value={sounds.yamaha.yRide}>Ride</option>
+                    <option value={sounds.yamaha.yRim}>Rim</option>
+                    <option value={sounds.yamaha.yShaker}>Shaker</option>
+                  </optgroup>
                 </select>
               </div>
               <label htmlFor="eighSelect">8th</label>
@@ -244,24 +288,46 @@ export default function Metronome() {
                 <select
                   name="quarSelect"
                   id="quarSelect"
-                  value={state.quarUrl}
+                  defaultValue={state.quarUrl}
                   onChange={(e) =>
                     dispatch({ type: "quarSound", value: e.target.value })
                   }
                   disabled={state.isPlaying}
                 >
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom}>Boom</option>
-                  <option value={sounds.clap}>Clap</option>
-                  <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick} defaultValue>
-                    Kick
-                  </option>
-                  <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride}>Ride Cymbal</option>
-                  <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves}>Claves</option>
-                  <option value={sounds.tom}>Tom</option>
+                  <option>Choose a Sound</option>
+                  <optgroup label="DigiMet">
+                    <option value={sounds.digital.down}>Down</option>
+                    <option value={sounds.digital.up}>Up</option>
+                    <option value={sounds.digital.tap}>Tap</option>
+                  </optgroup>
+                  <optgroup label="Drum Kit">
+                    <option value={sounds.drumkit.boom}>Boom</option>
+                    <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                    <option value={sounds.drumkit.kick}>Kick</option>
+                    <option value={sounds.drumkit.openHihat}>
+                      Open Hi-Hat
+                    </option>
+                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.snare}>Snare</option>
+                    <option value={sounds.drumkit.tom}>Tom</option>
+                  </optgroup>
+                  <optgroup label="Electro Drum">
+                    <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                    <option value={sounds.electrodrum.eKick}>Kick</option>
+                    <option value={sounds.electrodrum.eSnare}>Snare</option>
+                  </optgroup>
+                  <optgroup label="Tabla">
+                    <option value={sounds.tabla.dha}>Dha</option>
+                    <option value={sounds.tabla.dhin}>Dhin</option>
+                    <option value={sounds.tabla.tin}>Tin</option>
+                  </optgroup>
+                  <optgroup label="Yamaha">
+                    <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                    <option value={sounds.yamaha.yKick}>Kick</option>
+                    <option value={sounds.yamaha.yRide}>Ride</option>
+                    <option value={sounds.yamaha.yRim}>Rim</option>
+                    <option value={sounds.yamaha.yShaker}>Shaker</option>
+                  </optgroup>
                 </select>
               </div>
               <label htmlFor="quarSelect">Quarter</label>
@@ -291,18 +357,40 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom}>Boom</option>
-                  <option value={sounds.clap}>Clap</option>
-                  <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick}>Kick</option>
-                  <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride}>Ride Cymbal</option>
-                  <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves}>Claves</option>
-                  <option value={sounds.tom} defaultValue>
-                    Tom
-                  </option>
+                  <option>Choose a Sound</option>
+                  <optgroup label="DigiMet">
+                    <option value={sounds.digital.down}>Down</option>
+                    <option value={sounds.digital.up}>Up</option>
+                    <option value={sounds.digital.tap}>Tap</option>
+                  </optgroup>
+                  <optgroup label="Drum Kit">
+                    <option value={sounds.drumkit.boom}>Boom</option>
+                    <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                    <option value={sounds.drumkit.kick}>Kick</option>
+                    <option value={sounds.drumkit.openHihat}>
+                      Open Hi-Hat
+                    </option>
+                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.snare}>Snare</option>
+                    <option value={sounds.drumkit.tom}>Tom</option>
+                  </optgroup>
+                  <optgroup label="Electro Drum">
+                    <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                    <option value={sounds.electrodrum.eKick}>Kick</option>
+                    <option value={sounds.electrodrum.eSnare}>Snare</option>
+                  </optgroup>
+                  <optgroup label="Tabla">
+                    <option value={sounds.tabla.dha}>Dha</option>
+                    <option value={sounds.tabla.dhin}>Dhin</option>
+                    <option value={sounds.tabla.tin}>Tin</option>
+                  </optgroup>
+                  <optgroup label="Yamaha">
+                    <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                    <option value={sounds.yamaha.yKick}>Kick</option>
+                    <option value={sounds.yamaha.yRide}>Ride</option>
+                    <option value={sounds.yamaha.yRim}>Rim</option>
+                    <option value={sounds.yamaha.yShaker}>Shaker</option>
+                  </optgroup>
                 </select>
               </div>
               <label htmlFor="tripSelect">Triplet</label>
@@ -332,18 +420,40 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option value="">Choose a Sound</option>
-                  <option value={sounds.boom} defaultValue>
-                    Boom
-                  </option>
-                  <option value={sounds.clap}>Clap</option>
-                  <option value={sounds.hihat}>Hi-Hat</option>
-                  <option value={sounds.kick}>Kick</option>
-                  <option value={sounds.openHihat}>Open Hi-Hat</option>
-                  <option value={sounds.ride}>Ride Cymbal</option>
-                  <option value={sounds.snare}>Snare</option>
-                  <option value={sounds.claves}>Claves</option>
-                  <option value={sounds.tom}>Tom</option>
+                  <option>Choose a Sound</option>
+                  <optgroup label="DigiMet">
+                    <option value={sounds.digital.down}>Down</option>
+                    <option value={sounds.digital.up}>Up</option>
+                    <option value={sounds.digital.tap}>Tap</option>
+                  </optgroup>
+                  <optgroup label="Drum Kit">
+                    <option value={sounds.drumkit.boom}>Boom</option>
+                    <option value={sounds.drumkit.hihat}>Hi-Hat</option>
+                    <option value={sounds.drumkit.kick}>Kick</option>
+                    <option value={sounds.drumkit.openHihat}>
+                      Open Hi-Hat
+                    </option>
+                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.snare}>Snare</option>
+                    <option value={sounds.drumkit.tom}>Tom</option>
+                  </optgroup>
+                  <optgroup label="Electro Drum">
+                    <option value={sounds.electrodrum.eHiHat}>Hi-Hat</option>
+                    <option value={sounds.electrodrum.eKick}>Kick</option>
+                    <option value={sounds.electrodrum.eSnare}>Snare</option>
+                  </optgroup>
+                  <optgroup label="Tabla">
+                    <option value={sounds.tabla.dha}>Dha</option>
+                    <option value={sounds.tabla.dhin}>Dhin</option>
+                    <option value={sounds.tabla.tin}>Tin</option>
+                  </optgroup>
+                  <optgroup label="Yamaha">
+                    <option value={sounds.yamaha.yCowbell}>Cowbell</option>
+                    <option value={sounds.yamaha.yKick}>Kick</option>
+                    <option value={sounds.yamaha.yRide}>Ride</option>
+                    <option value={sounds.yamaha.yRim}>Rim</option>
+                    <option value={sounds.yamaha.yShaker}>Shaker</option>
+                  </optgroup>
                 </select>
               </div>
               <label htmlFor="measSelect">Measure</label>
