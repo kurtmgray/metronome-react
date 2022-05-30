@@ -114,13 +114,9 @@ TODO:
 
 	SCROLL presets issue
 
-	Add sounds
-
 	USE MORE HELPER FUNCTIONS... getting indexes, etc.
 
 	Metronome side styling
-
-	Defaults for sounds
 
 	Start glitch/buffer
 	Program Beat Counter is messed up again, as are the preset highlights
