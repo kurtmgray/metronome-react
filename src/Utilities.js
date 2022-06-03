@@ -2,6 +2,7 @@ import * as Tone from "tone";
 import React from "react";
 
 export const scheduleDraw = (dispatch, time, startLeft) => {
+  console.log(startLeft.current);
   if (!startLeft.current) {
     Tone.Draw.schedule(() => {
       dispatch({ type: "toggleActiveDrawNote", value: 1 });

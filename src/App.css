@@ -66,11 +66,13 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #cccaca;
+
   min-width: 750px;
 }
 
 .metronome {
-  background-color: white;
+  background-color: #cccaca;
   padding-bottom: 1rem;
   border-radius: 0px 0px 10px 10px;
 }
@@ -122,7 +124,8 @@ a {
   border-radius: 5px;
 }
 
-.programDisplay {
+.digitDisplay,
+.digitDisplayMet {
   display: flex;
   justify-content: space-around;
   width: 600px;
@@ -133,15 +136,36 @@ a {
   margin: 20px;
 }
 
+.digitDisplayMet {
+  width: 500px;
+}
+
 .displayElement {
   flex-basis: 33%;
 }
 
-.programDisplayNumber {
+.displayElementMet {
+  flex-basis: 30%;
+}
+
+.digitDisplayNumber {
   font-family: "Open24", sans-serif;
   font-size: 60px;
   font-weight: bolder;
   color: #3c412c;
+}
+
+.tempoTimeSliders {
+  display: flex;
+  width: 600px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tempoBox {
+  display: flex;
+  gap: 10px;
+  text-align: center;
 }
 
 .programControls {
@@ -251,6 +275,42 @@ a {
   border: none;
 }
 
+.metSlider,
+.tempoSlider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  width: 120px; /* Full-width */
+  height: 20px; /* Specified height */
+  background: #5c5c5c; /* Grey background */
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+    rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+}
+
+.metSlider:hover,
+.tempoSlider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+.metSlider::-webkit-slider-thumb,
+.tempoSlider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #ffd000; /* Green background */
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 5px inset,
+    rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  cursor: pointer; /* Cursor on hover */
+}
+
+.metSlider::-webkit-slider-runnable-track,
+.tempoSlider::-webkit-slider-runnable-track {
+}
+
 input[type="text"]:not(.barText):not(.presetTitle) {
   border: none;
   font-size: 40px;
@@ -264,7 +324,7 @@ input[type="text"].barText {
 }
 
 input[type="range"]:not(.tempoSlider) {
-  transform: translateY(60px) translateX(-18px) rotate(270deg);
+  transform: translateY(60px) translateX(-12px) rotate(270deg);
 }
 
 input[type="number"] {
@@ -274,7 +334,25 @@ input[type="number"] {
 }
 
 select {
-  width: 100px;
+  width: 90px;
+  /* font-family: "helvetica neue", helvetica; */
+  margin: 8px;
+  border-radius: 5px;
+  /* font-size: 1rem; */
+  font-weight: 200;
+  max-width: 100%;
+  padding: 8px 24px 8px 10px;
+  border: none;
+  background-color: #eeeded;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+select:active,
+select:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .tempoEdit {
@@ -301,7 +379,6 @@ select {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
 }
 
 .verticalRange {
@@ -309,15 +386,30 @@ select {
   width: 100px;
 }
 
-.programHead {
+.programHead,
+.mainDisplay {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 80%;
   border-radius: 5px;
-  background-color: black;
+  background-color: rgb(46, 46, 46);
   margin: 16px;
   padding: 8px;
+}
+
+.mainDisplay {
+  padding-top: 16px;
+}
+
+.mastVolLabel {
+  text-align: center;
+  width: 80px;
+}
+
+.beatTsLabel {
+  display: flex;
+  justify-content: space-between;
 }
 
 .programs {

@@ -831,7 +831,6 @@ const reducer = (state, action) => {
       if (tempo < 30) tempo = 30;
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        console.log("fired");
         return { ...state, lastClick: null, secondToLastClick: null };
       }, 5000);
       return {
@@ -952,12 +951,11 @@ const reducer = (state, action) => {
           currentTempo: action.tempo,
           currentTimeSig: action.timeSig,
           currentMeasures: action.measures,
-          currentBeat:
-            action.timeSig < action.prevTimeSig
-              ? state.currentBeat > action.prevTimeSig
-                ? 1
-                : state.currentBeat + 1
-              : state.currentBeat + 1,
+          currentBeat: action.prevTimeSig
+            ? state.currentBeat >= action.prevTimeSig
+              ? 0
+              : null
+            : 1,
         };
       }
     }
@@ -1026,6 +1024,14 @@ export const ToneContext = ({ children }) => {
     tripSound.current = new Tone.Player(state.tripUrl).toDestination();
     sixtSound.current = new Tone.Player(state.sixtUrl).toDestination();
 
+    if (measSound.current.state === "started") {
+      measSound.current.stop();
+      quarSound.current.stop();
+      eighSound.current.stop();
+      tripSound.current.stop();
+      sixtSound.current.stop();
+    }
+
     measLoop.current = new Tone.Loop((time) => {
       measSound.current.start(time);
     }, "1m");
@@ -1051,20 +1057,35 @@ export const ToneContext = ({ children }) => {
   ]);
 
   // schedule draw events for metronome
-  // useEffect(() => {
-  //   Tone.Draw.cancel(0);
-  //   Tone.Transport.PPQ = 24;
-  //   Tone.Transport.scheduleRepeat((time) => {
-  //     // dispatch({ type: "updateCurrentBeat" });
-  //     dispatch({ type: "toggleStartLeft" });
-  //     scheduleDraw(dispatch, time, state); // scheduled, so don't have access to changing state.
-  //   }, "4n");
-  // }, [state.isPlaying]);
+  const startLeft = useRef(false);
+  useEffect(() => {
+    Tone.Draw.cancel(0);
+    Tone.Transport.PPQ = 24;
+    Tone.Transport.scheduleRepeat((time) => {
+      dispatch({ type: "updateCurrentBeat" });
+      startLeft.current = !startLeft.current;
+      scheduleDraw(dispatch, time, startLeft);
+    }, "4n");
+    Tone.Transport.scheduleRepeat((time) => {
+      dispatch({ type: "updateCurrentMeasure" });
+    }, "1m");
+    // if (!state.isPlaying) {
+    //   Tone.Transport.stop();
+    //   Tone.Transport.cancel(0);
+    //   startLeft.current = false;
+    //   dispatch({ type: "stop" });
+    //   dispatch({ type: "resetCurrentBeat" });
+    //   console.log("lkajsdjkl");
+    // }
+  }, [state.isPlaying]);
 
   // for metronome
   useEffect(() => {
     if (state.isPlaying && !state.activeProgramId && !state.programMode) {
       Tone.start();
+      // Tone.Transport.scheduleRepeat((time) => {
+      //   scheduleDraw(dispatch, time, startLeft);
+      // }, "4n");
       Tone.Transport.start();
     } else if (
       !state.isPlaying &&
@@ -1073,6 +1094,7 @@ export const ToneContext = ({ children }) => {
     ) {
       Tone.Transport.stop();
       Tone.Transport.cancel();
+      startLeft.current = true;
       measLoop.current.stop();
       quarLoop.current.stop();
       eighLoop.current.stop();
@@ -1143,27 +1165,14 @@ export const ToneContext = ({ children }) => {
   ]);
 
   // for program
-  const startLeft = useRef(false);
   useEffect(() => {
     if (state.activeProgramId && state.programMode && state.isPlaying) {
-      Tone.start();
-      Tone.Transport.cancel();
-      Tone.Transport.lookahead = 100;
-      Tone.Draw.cancel();
-      console.log("test");
+      console.log(Tone.Transport.timeSignature);
 
-      //schedule the beat display increment
-      Tone.Transport.scheduleRepeat((time) => {
-        dispatch({ type: "updateCurrentBeat" });
-        startLeft.current = !startLeft.current;
-        scheduleDraw(dispatch, time, startLeft);
-      }, "4n");
-      // schedule the measure display increment
-      Tone.Transport.scheduleRepeat((time) => {
-        dispatch({ type: "updateCurrentMeasure" });
-      }, "1m");
-      // schedule the beat cursor
-      Tone.Transport.scheduleRepeat((time) => {}, "2n");
+      Tone.start();
+      Tone.Transport.lookahead = 100;
+      // Tone.Draw.cancel();
+      console.log("test");
 
       // calculate beats in the programming for scheduling start of presets
       const activeProgram = state.programs.find(
@@ -1180,12 +1189,13 @@ export const ToneContext = ({ children }) => {
 
       // schedules a stop and reset of currentBeat after all of the beats in the program
       Tone.Transport.schedule((time) => {
+        Tone.Transport.timeSignature = activeProgram.presets[0].timeSignature; // reset to 1st timeSig at start
         Tone.Transport.stop();
-        console.log("stop");
+        Tone.Transport.cancel(0);
+        startLeft.current = false;
         dispatch({ type: "stop" });
         dispatch({ type: "resetCurrentBeat" });
       }, `0:${runningTotalBeats}:0`);
-      console.log(runningTotalBeats);
 
       // attaches sound URLs to Players, sets volume based on presets
       // schedules loop iterations and start beats
@@ -1204,14 +1214,10 @@ export const ToneContext = ({ children }) => {
         players.player("sixt").volume.value = preset.volume.sixt;
 
         Tone.Transport.schedule(() => {
-          // Tone.Draw.cancel();
           Tone.Transport.bpm.value = preset.tempo;
           Tone.Transport.timeSignature = preset.timeSignature;
-          dispatch({
-            type: "toggleActivePresetDivs",
-            current: i,
-            previous: i === 0 ? null : i - 1,
-          });
+          console.log(Tone.Transport.timeSignature);
+
           const prevTimeSig =
             i > 0 ? activeProgram.presets[i - 1].timeSignature : null;
           dispatch({
@@ -1221,7 +1227,15 @@ export const ToneContext = ({ children }) => {
             measures: preset.iterations,
             prevTimeSig: prevTimeSig,
           });
+          dispatch({
+            type: "toggleActivePresetDivs",
+            current: i,
+            previous: i === 0 ? null : i - 1,
+          });
         }, `0:${markerBeats[i]}:0`);
+
+        if (i === activeProgram.presets.length - 1) {
+        }
 
         return Object.keys(preset.sounds).forEach((sound) => {
           let loop = new Tone.Loop((time) => {
@@ -1238,8 +1252,11 @@ export const ToneContext = ({ children }) => {
       // activeProgram.presets.map((preset, i) => {});
       Tone.Transport.start();
     } else if (state.activeProgramId && state.programMode && !state.isPlaying) {
-      Tone.Transport.cancel(0);
       Tone.Transport.stop();
+      Tone.Transport.cancel(0);
+      startLeft.current = false;
+      dispatch({ type: "stop" });
+      dispatch({ type: "resetCurrentBeat" });
     }
   }, [
     state.isPlaying,

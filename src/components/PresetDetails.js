@@ -101,6 +101,7 @@ export default function PresetDetails() {
         <div className="soundControl">
           <div className="verticalRange">
             <input
+              className="metSlider"
               id="bpm"
               type="range"
               min={-50}
@@ -176,6 +177,7 @@ export default function PresetDetails() {
         <div className="soundControl">
           <div className="verticalRange">
             <input
+              className="metSlider"
               id="bpm"
               type="range"
               min={-50}
@@ -251,6 +253,7 @@ export default function PresetDetails() {
         <div className="soundControl">
           <div className="verticalRange">
             <input
+              className="metSlider"
               id="bpm"
               type="range"
               min={-50}
@@ -326,6 +329,7 @@ export default function PresetDetails() {
         <div className="soundControl">
           <div className="verticalRange">
             <input
+              className="metSlider"
               id="bpm"
               type="range"
               min={-50}
@@ -401,6 +405,7 @@ export default function PresetDetails() {
         <div className="soundControl">
           <div className="verticalRange">
             <input
+              className="metSlider"
               id="bpm"
               type="range"
               min={-50}

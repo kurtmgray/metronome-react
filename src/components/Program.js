@@ -14,7 +14,6 @@ export default function Program() {
             className="programTitle"
             placeholder="Enter program title"
             type="text"
-            data-whatever={state.activeProgramId}
             value={
               state.programs.find(
                 (program) => program.id === state.activeProgramId
@@ -108,25 +107,25 @@ export default function Program() {
               })}
             ></div>
           </div>
-          <div className="programDisplay">
+          <div className="digitDisplay">
             <div className="displayElement">
               {state.currentMeasure ? (
-                <span className="programDisplayNumber">
+                <span className="digitDisplayNumber">
                   {state.currentMeasure} / {state.currentMeasures}
                 </span>
               ) : (
-                <span className="programDisplayNumber">0</span>
+                <span className="digitDisplayNumber">0</span>
               )}
               <h3>Bar</h3>
             </div>
             <div className="displayElement">
-              <span className="programDisplayNumber">
+              <span className="digitDisplayNumber">
                 {state.currentBeat || "0"}
               </span>
               <h3>Beat</h3>
             </div>
             <div className="displayElement">
-              <span className="programDisplayNumber">
+              <span className="digitDisplayNumber">
                 {state.currentTempo || "0"}
               </span>
               <h3>BPM</h3>

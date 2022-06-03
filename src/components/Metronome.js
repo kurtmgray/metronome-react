@@ -15,10 +15,7 @@ export default function Metronome() {
       <div className="metronome">
         <div className="controls" id="controls">
           <div className="mainDisplay">
-            <div className="tempoDisplay">
-              <h1>{state.tempo}</h1>
-            </div>
-            <div id="notes">
+            <div className="notes">
               <div
                 id=""
                 className={classNames("note", {
@@ -98,54 +95,67 @@ export default function Metronome() {
                 })}
               ></div>
             </div>
-            <div className="beatInfo">
-              <div className="beatsPerDisplay">
-                <h2>{state.beatsPerMeasure}</h2>
+            <div className="digitDisplayMet">
+              <div className="displayElementMet">
+                <span className="digitDisplayNumber">{state.tempo}</span>
+                <h3>Tempo</h3>
               </div>
-              <div className="beatDisplay">
-                <h2>{state.currentBeat}</h2>
+              <div className="displayElementMet">
+                <span className="digitDisplayNumber">
+                  {state.currentBeat || "0"} / {state.beatsPerMeasure}
+                </span>
+                <div className="beatTsLabel">
+                  <h3>Beat</h3>
+                  <h3>Time Sig</h3>
+                </div>
               </div>
             </div>
           </div>
-          <div id="tempoBox">
-            <input
-              className="tempoSlider"
-              id="tempo"
-              type="range"
-              min={30.0}
-              max={220.0}
-              value={state.tempo}
-              style={{ height: "20px", width: "200px" }}
-              onChange={(e) =>
-                dispatch({ type: "tempo", value: Number(e.target.value) })
-              }
-            />
-          </div>
-          <div className="signature">
-            <p>
-              Time
-              {/* <span id="showBPM">{state.beatsPerMeasure}</span> */}
-            </p>
-            <input
-              id="bpm"
-              type="number"
-              min={1}
-              max={6}
-              value={state.beatsPerMeasure}
-              style={{ height: "20px", width: "40px" }}
-              onChange={(e) =>
-                dispatch({
-                  type: "beatsPerMeasure",
-                  value: Number(e.target.value),
-                })
-              }
-            />
+          <div className="tempoTimeSliders">
+            <div className="tempoBox">
+              <div>
+                <input
+                  className="tempoSlider"
+                  id="tempo"
+                  type="range"
+                  min={30.0}
+                  max={220.0}
+                  value={state.tempo}
+                  style={{ height: "20px", width: "200px" }}
+                  onChange={(e) =>
+                    dispatch({ type: "tempo", value: Number(e.target.value) })
+                  }
+                />
+                <p>Tempo</p>
+              </div>
+              <div>
+                <input
+                  className="tempoSlider"
+                  id="bpm"
+                  type="range"
+                  min={1}
+                  max={6}
+                  value={state.beatsPerMeasure}
+                  style={{ height: "20px", width: "200px" }}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "beatsPerMeasure",
+                      value: Number(e.target.value),
+                    })
+                  }
+                />
+                <p>
+                  Time Signature
+                  {/* <span id="showBPM">{state.beatsPerMeasure}</span> */}
+                </p>
+              </div>
+            </div>
           </div>
           <div className="soundControlContainer">
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="bpm"
                   type="range"
                   min={-50}
@@ -167,7 +177,6 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option>Choose a Sound</option>
                   <optgroup label="DigiMet">
                     <option value={sounds.digital.down}>Down</option>
                     <option value={sounds.digital.up}>Up</option>
@@ -177,10 +186,8 @@ export default function Metronome() {
                     <option value={sounds.drumkit.boom}>Boom</option>
                     <option value={sounds.drumkit.hihat}>Hi-Hat</option>
                     <option value={sounds.drumkit.kick}>Kick</option>
-                    <option value={sounds.drumkit.openHihat}>
-                      Open Hi-Hat
-                    </option>
-                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.openHihat}>Hi-Hat 2</option>
+                    <option value={sounds.drumkit.ride}>Ride</option>
                     <option value={sounds.drumkit.snare}>Snare</option>
                     <option value={sounds.drumkit.tom}>Tom</option>
                   </optgroup>
@@ -209,7 +216,7 @@ export default function Metronome() {
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="bpm"
                   type="range"
                   min={-50}
@@ -231,7 +238,6 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option>Choose a Sound</option>
                   <optgroup label="DigiMet">
                     <option value={sounds.digital.down}>Down</option>
                     <option value={sounds.digital.up}>Up</option>
@@ -241,10 +247,8 @@ export default function Metronome() {
                     <option value={sounds.drumkit.boom}>Boom</option>
                     <option value={sounds.drumkit.hihat}>Hi-Hat</option>
                     <option value={sounds.drumkit.kick}>Kick</option>
-                    <option value={sounds.drumkit.openHihat}>
-                      Open Hi-Hat
-                    </option>
-                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.openHihat}>Hi-Hat 2</option>
+                    <option value={sounds.drumkit.ride}>Ride</option>
                     <option value={sounds.drumkit.snare}>Snare</option>
                     <option value={sounds.drumkit.tom}>Tom</option>
                   </optgroup>
@@ -272,7 +276,7 @@ export default function Metronome() {
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="bpm"
                   type="range"
                   min={-50}
@@ -294,7 +298,6 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option>Choose a Sound</option>
                   <optgroup label="DigiMet">
                     <option value={sounds.digital.down}>Down</option>
                     <option value={sounds.digital.up}>Up</option>
@@ -304,10 +307,8 @@ export default function Metronome() {
                     <option value={sounds.drumkit.boom}>Boom</option>
                     <option value={sounds.drumkit.hihat}>Hi-Hat</option>
                     <option value={sounds.drumkit.kick}>Kick</option>
-                    <option value={sounds.drumkit.openHihat}>
-                      Open Hi-Hat
-                    </option>
-                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.openHihat}>Hi-Hat 2</option>
+                    <option value={sounds.drumkit.ride}>Ride</option>
                     <option value={sounds.drumkit.snare}>Snare</option>
                     <option value={sounds.drumkit.tom}>Tom</option>
                   </optgroup>
@@ -335,7 +336,7 @@ export default function Metronome() {
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="bpm"
                   type="range"
                   min={-50}
@@ -357,7 +358,6 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option>Choose a Sound</option>
                   <optgroup label="DigiMet">
                     <option value={sounds.digital.down}>Down</option>
                     <option value={sounds.digital.up}>Up</option>
@@ -367,10 +367,8 @@ export default function Metronome() {
                     <option value={sounds.drumkit.boom}>Boom</option>
                     <option value={sounds.drumkit.hihat}>Hi-Hat</option>
                     <option value={sounds.drumkit.kick}>Kick</option>
-                    <option value={sounds.drumkit.openHihat}>
-                      Open Hi-Hat
-                    </option>
-                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.openHihat}>Hi-Hat 2</option>
+                    <option value={sounds.drumkit.ride}>Ride</option>
                     <option value={sounds.drumkit.snare}>Snare</option>
                     <option value={sounds.drumkit.tom}>Tom</option>
                   </optgroup>
@@ -398,7 +396,7 @@ export default function Metronome() {
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="bpm"
                   type="range"
                   min={-50}
@@ -420,7 +418,6 @@ export default function Metronome() {
                   }
                   disabled={state.isPlaying}
                 >
-                  <option>Choose a Sound</option>
                   <optgroup label="DigiMet">
                     <option value={sounds.digital.down}>Down</option>
                     <option value={sounds.digital.up}>Up</option>
@@ -430,10 +427,8 @@ export default function Metronome() {
                     <option value={sounds.drumkit.boom}>Boom</option>
                     <option value={sounds.drumkit.hihat}>Hi-Hat</option>
                     <option value={sounds.drumkit.kick}>Kick</option>
-                    <option value={sounds.drumkit.openHihat}>
-                      Open Hi-Hat
-                    </option>
-                    <option value={sounds.drumkit.ride}>Ride Cymbal</option>
+                    <option value={sounds.drumkit.openHihat}>Hi-Hat 2</option>
+                    <option value={sounds.drumkit.ride}>Ride</option>
                     <option value={sounds.drumkit.snare}>Snare</option>
                     <option value={sounds.drumkit.tom}>Tom</option>
                   </optgroup>
@@ -461,7 +456,7 @@ export default function Metronome() {
             <div className="soundControl">
               <div className="verticalRange">
                 <input
-                  className="metControl"
+                  className="metSlider"
                   id="mastVol"
                   type="range"
                   min={-50}
@@ -473,7 +468,9 @@ export default function Metronome() {
                 />
               </div>
               <span id="mastVol">{state.mastVol}</span>
-              <label htmlFor="mastVol">Master Volume</label>
+              <label className="mastVolLabel" htmlFor="mastVol">
+                <h3>Master Volume</h3>
+              </label>
             </div>
           </div>
         </div>

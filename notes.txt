@@ -116,14 +116,18 @@ TODO:
 
 	USE MORE HELPER FUNCTIONS... getting indexes, etc.
 
-	Metronome side styling
+	Master Volume
 
 	Start glitch/buffer
-	Program Beat Counter is messed up again, as are the preset highlights
+		presets and start glitch when playing a 2nd time
+		time sig issues when adding a preset
 
+	Metronome 
+		breaks when changing time signature
 
 	fix sound hosting - using S3 bucket, not sure why it wasnt working locally
 
+	measures not updating correctly
 
 
 
